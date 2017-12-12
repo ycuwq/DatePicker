@@ -1,0 +1,10 @@
+ext {
+    // Sdk and tools
+    minSdkVersion = 21
+    targetSdkVersion = 26
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.2'
+
+    supportLibraryVersion = '26.1.0'
+
+}
