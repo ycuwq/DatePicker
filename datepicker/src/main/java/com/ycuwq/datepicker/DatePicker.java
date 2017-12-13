@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 /**
  * Created by yangchen on 2017/12/12.
  */
-public class DatePicker extends ViewGroup{
+public class DatePicker extends ViewGroup {
 	public DatePicker(Context context) {
 		this(context, null);
 	}
