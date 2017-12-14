@@ -10,7 +10,11 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.Scroller;
 
 import java.util.List;
 
@@ -39,6 +43,14 @@ public class WheelPicker<T> extends View {
 
 	private int mItemDrawX, mItemDrawY;
 
+	private Scroller mScroller;
+
+	private int mTouchSlop;
+
+	private VelocityTracker mTracker;
+
+	private int mTouchDownY;
+
 	public WheelPicker(Context context) {
 		this(context, null);
 	}
@@ -52,8 +64,12 @@ public class WheelPicker<T> extends View {
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
 		a.recycle();
-		init();
+		initPaint();
 		mRectDrawn = new Rect();
+		mScroller = new Scroller(context);
+		ViewConfiguration configuration = ViewConfiguration.get(context);
+		mTouchSlop = configuration.getScaledTouchSlop();
+
 	}
 
 	public void setDataList(@NonNull List<T> dataList) {
@@ -74,12 +90,27 @@ public class WheelPicker<T> extends View {
 		mTextMaxHeight = (int) (metrics.bottom - metrics.top);
 	}
 
-	private void init() {
+	private void initPaint() {
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
 		mPaint.setStyle(Paint.Style.FILL);
 		mPaint.setTextAlign(Paint.Align.CENTER);
 		mPaint.setColor(mTextColor);
 		mPaint.setTextSize(mTextSize);
+	}
+
+	/**
+	 *  计算实际的大小
+	 * @param specMode 测量模式
+	 * @param specSize 测量的大小
+	 * @param size     需要的大小
+	 * @return 返回的数值
+	 */
+	private int measureSize(int specMode, int specSize, int size) {
+		if (specMode == MeasureSpec.EXACTLY) {
+			return specSize;
+		} else {
+			return Math.min(specSize, size);
+		}
 	}
 
 	@Override
@@ -121,19 +152,38 @@ public class WheelPicker<T> extends View {
 	}
 
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				if (mTracker == null) {
+					mTracker = VelocityTracker.obtain();
+				} else {
+					mTracker.clear();
+				}
 
-	/**
-	 *  计算实际的大小
-	 * @param specMode 测量模式
-	 * @param specSize 测量的大小
-	 * @param size     需要的大小
-	 * @return 返回的数值
-	 */
-	private int measureSize(int specMode, int specSize, int size) {
-		if (specMode == MeasureSpec.EXACTLY) {
-			return specSize;
-		} else {
-			return Math.min(specSize, size);
+				mTracker.addMovement(event);
+				if (!mScroller.isFinished()) {
+					mScroller.abortAnimation();
+
+				}
+				mTouchDownY = (int) event.getY();
+				break;
+			case MotionEvent.ACTION_MOVE:
+				break;
+			case MotionEvent.ACTION_UP:
+				break;
 		}
+		return super.onTouchEvent(event);
+	}
+
+	@Override
+	public void computeScroll() {
+		super.computeScroll();
+	}
+
+	@Override
+	public boolean performClick() {
+		return super.performClick();
 	}
 }
