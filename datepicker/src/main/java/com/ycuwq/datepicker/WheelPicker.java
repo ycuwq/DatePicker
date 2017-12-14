@@ -18,22 +18,21 @@ import android.widget.Scroller;
 
 import java.util.List;
 
+
 /**
  * 滚动选择器
  * Created by yangchen on 2017/12/12.
  */
 public class WheelPicker<T> extends View {
-
+	private final String TAG = getClass().getSimpleName();
 	private List<T> mDataList;
 	private int mTextColor = Color.BLACK;
 	private Paint mPaint;
 	private Camera mCamera;
 	private int mTextSize = 80;
 	private int mTextMaxWidth, mTextMaxHeight;
-	private int mVisibleItemCount = 5;
+	private int mVisibleItemCount = 2;
 	private int mItemSpace = 8;
-
-	private int mScrollOffsetY;
 
 	private int mItemHeight;
 
@@ -50,6 +49,8 @@ public class WheelPicker<T> extends View {
 	private VelocityTracker mTracker;
 
 	private int mTouchDownY;
+	private int mScrollOffsetY;
+	private int mLastDownY;
 
 	public WheelPicker(Context context) {
 		this(context, null);
@@ -121,7 +122,7 @@ public class WheelPicker<T> extends View {
 		int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
 		int width = mTextMaxWidth;
-		int height = mTextMaxHeight * mVisibleItemCount + mItemSpace * (mVisibleItemCount - 1);
+		int height = mTextMaxHeight * (mVisibleItemCount * 2 + 1) + mItemSpace * (mVisibleItemCount - 1);
 
 		width += getPaddingLeft() + getPaddingRight();
 		height += getPaddingTop() + getPaddingBottom();
@@ -145,9 +146,10 @@ public class WheelPicker<T> extends View {
 		int drawnDataStartPos = - mScrollOffsetY / mItemHeight;
 		for (int i = 0; i < mDataList.size(); i++) {
 			T t = mDataList.get(i);
-			int drawY = mItemDrawY + i * mItemHeight;
+			int drawY = mItemDrawY + i * mItemHeight + mScrollOffsetY;
 			canvas.drawText(t.toString(), mItemDrawX, drawY, mPaint);
 		}
+
 
 	}
 
@@ -167,14 +169,27 @@ public class WheelPicker<T> extends View {
 					mScroller.abortAnimation();
 
 				}
-				mTouchDownY = (int) event.getY();
+				mTouchDownY = mLastDownY = (int) event.getY();
 				break;
 			case MotionEvent.ACTION_MOVE:
+				if (Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
+				}
+
+				mTracker.addMovement(event);
+				float move = event.getY() - mLastDownY;
+				mScrollOffsetY += move;
+				mLastDownY = (int) event.getY();
+				invalidate();
 				break;
 			case MotionEvent.ACTION_UP:
+				mTracker.addMovement(event);
+				mTracker.computeCurrentVelocity(1000);
+
+				mTracker.recycle();
+				mTracker = null;
 				break;
 		}
-		return super.onTouchEvent(event);
+		return true;
 	}
 
 	@Override
