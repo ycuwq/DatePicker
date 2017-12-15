@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -31,14 +32,17 @@ public class WheelPicker<T> extends View {
 	private Camera mCamera;
 	private int mTextSize = 80;
 	private int mTextMaxWidth, mTextMaxHeight;
-	private int mVisibleItemCount = 2;
+	private int mHalfVisibleItemCount = 2;
+
 	private int mItemSpace = 8;
 
 	private int mItemHeight;
 
 	private int mCurrentItemPosition;
 
-	private Rect mRectDrawn;
+	private Rect mDrawnRect;
+
+	private Rect mChooseRect;
 
 	private int mItemDrawX, mItemDrawY;
 
@@ -51,6 +55,7 @@ public class WheelPicker<T> extends View {
 	private int mTouchDownY;
 	private int mScrollOffsetY;
 	private int mLastDownY;
+
 
 	public WheelPicker(Context context) {
 		this(context, null);
@@ -66,7 +71,8 @@ public class WheelPicker<T> extends View {
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
 		a.recycle();
 		initPaint();
-		mRectDrawn = new Rect();
+		mDrawnRect = new Rect();
+		mChooseRect = new Rect();
 		mScroller = new Scroller(context);
 		ViewConfiguration configuration = ViewConfiguration.get(context);
 		mTouchSlop = configuration.getScaledTouchSlop();
@@ -79,6 +85,7 @@ public class WheelPicker<T> extends View {
 			return;
 		}
 		computeTextSize();
+		mCurrentItemPosition = 0;
 	}
 
 	public void computeTextSize() {
@@ -97,6 +104,14 @@ public class WheelPicker<T> extends View {
 		mPaint.setTextAlign(Paint.Align.CENTER);
 		mPaint.setColor(mTextColor);
 		mPaint.setTextSize(mTextSize);
+	}
+
+	/**
+	 * 显示的个数等于上下两边Item的个数+ 中间的ITem
+	 * @return
+	 */
+	private int getVisibleItemCount() {
+		return mHalfVisibleItemCount * 2 + 1;
 	}
 
 	/**
@@ -122,7 +137,7 @@ public class WheelPicker<T> extends View {
 		int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
 		int width = mTextMaxWidth;
-		int height = mTextMaxHeight * (mVisibleItemCount * 2 + 1) + mItemSpace * (mVisibleItemCount - 1);
+		int height = mTextMaxHeight * getVisibleItemCount() + mItemSpace * (mHalfVisibleItemCount - 1);
 
 		width += getPaddingLeft() + getPaddingRight();
 		height += getPaddingTop() + getPaddingBottom();
@@ -133,23 +148,35 @@ public class WheelPicker<T> extends View {
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		mRectDrawn.set(getPaddingLeft(), getPaddingTop(),
+		mDrawnRect.set(getPaddingLeft(), getPaddingTop(),
 				getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-		mItemHeight = mRectDrawn.height() / mVisibleItemCount;
-		mItemDrawX = mRectDrawn.centerX();
+		mItemHeight = mDrawnRect.height() / getVisibleItemCount();
+		mItemDrawX = mDrawnRect.centerX();
 		mItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
+		//中间的Item边框
+		mChooseRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
+				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
+
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		int drawnDataStartPos = - mScrollOffsetY / mItemHeight;
-		for (int i = 0; i < mDataList.size(); i++) {
-			T t = mDataList.get(i);
-			int drawY = mItemDrawY + i * mItemHeight + mScrollOffsetY;
+		mPaint.setColor(mTextColor);
+		mPaint.setStyle(Paint.Style.FILL);
+		for (int drawDataPos = drawnDataStartPos - mHalfVisibleItemCount;
+            drawDataPos <= drawnDataStartPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
+			if (drawDataPos < 0 || drawDataPos > mDataList.size() - 1) {
+				continue;
+			}
+			T t = mDataList.get(drawDataPos);
+			int drawY = mItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
+
 			canvas.drawText(t.toString(), mItemDrawX, drawY, mPaint);
 		}
-
+		mPaint.setStyle(Paint.Style.STROKE);
+		canvas.drawRect(mChooseRect, mPaint);
 
 	}
 
@@ -180,11 +207,11 @@ public class WheelPicker<T> extends View {
 				mScrollOffsetY += move;
 				mLastDownY = (int) event.getY();
 				invalidate();
+				Log.d(TAG, "onTouchEvent: ACTION_MOVE" + mScrollOffsetY);
 				break;
 			case MotionEvent.ACTION_UP:
 				mTracker.addMovement(event);
 				mTracker.computeCurrentVelocity(1000);
-
 				mTracker.recycle();
 				mTracker = null;
 				break;
