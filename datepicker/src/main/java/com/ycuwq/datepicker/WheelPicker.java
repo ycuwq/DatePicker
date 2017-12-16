@@ -7,10 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -55,7 +55,26 @@ public class WheelPicker<T> extends View {
 	private int mTouchDownY;
 	private int mScrollOffsetY;
 	private int mLastDownY;
+	private boolean mIsCyclic;
 
+	private Handler mHandler = new Handler();
+
+	private int mMaxFlingY, mMinFlingY;
+	/**
+	 * 滚轮滑动时的最小/最大速度
+	 */
+	private int mMinimumVelocity = 50, mMaximumVelocity = 10000;
+
+	private Runnable mScrollerRunnable = new Runnable() {
+		@Override
+		public void run() {
+			if (mScroller.computeScrollOffset()) {
+				mScrollOffsetY = mScroller.getCurrY();
+				postInvalidate();
+				mHandler.postDelayed(this, 16);
+			}
+		}
+	};
 
 	public WheelPicker(Context context) {
 		this(context, null);
@@ -78,6 +97,7 @@ public class WheelPicker<T> extends View {
 		mTouchSlop = configuration.getScaledTouchSlop();
 
 	}
+
 
 	public void setDataList(@NonNull List<T> dataList) {
 		mDataList = dataList;
@@ -144,7 +164,12 @@ public class WheelPicker<T> extends View {
 		setMeasuredDimension(measureSize(specWidthMode, specWidthSize, width),
 				measureSize(specHeightMode, specHeightSize, height));
 	}
-
+	private void computeFlingLimitY() {
+		int currentItemOffset = mCurrentItemPosition * mItemHeight;
+		mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
+				- mItemHeight * (mDataList.size() - 1) + currentItemOffset;
+		mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : currentItemOffset;
+	}
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
@@ -156,7 +181,7 @@ public class WheelPicker<T> extends View {
 		//中间的Item边框
 		mChooseRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
-
+		computeFlingLimitY();
 	}
 
 	@Override
@@ -183,35 +208,50 @@ public class WheelPicker<T> extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+
+		if (mTracker == null) {
+			mTracker = VelocityTracker.obtain();
+		}
+		mTracker.addMovement(event);
+
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				if (mTracker == null) {
-					mTracker = VelocityTracker.obtain();
-				} else {
-					mTracker.clear();
-				}
-
-				mTracker.addMovement(event);
 				if (!mScroller.isFinished()) {
 					mScroller.abortAnimation();
-
 				}
+				mTracker.clear();
 				mTouchDownY = mLastDownY = (int) event.getY();
 				break;
 			case MotionEvent.ACTION_MOVE:
 				if (Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
+
 				}
 
-				mTracker.addMovement(event);
 				float move = event.getY() - mLastDownY;
 				mScrollOffsetY += move;
 				mLastDownY = (int) event.getY();
 				invalidate();
-				Log.d(TAG, "onTouchEvent: ACTION_MOVE" + mScrollOffsetY);
 				break;
 			case MotionEvent.ACTION_UP:
-				mTracker.addMovement(event);
-				mTracker.computeCurrentVelocity(1000);
+				mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+				int velocity = (int) mTracker.getYVelocity();
+				if (Math.abs(velocity) > mMinimumVelocity) {
+					mScroller.fling(0, mScrollOffsetY, 0, (int) mTracker.getYVelocity(),
+							0, 0, mMinFlingY, mMaxFlingY);
+					mScroller.setFinalY(mScroller.getFinalY() +
+							computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+				} else {
+					mScroller.startScroll(0, mScrollOffsetY, 0,
+							computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
+				}
+				if (!mIsCyclic) {
+					if (mScroller.getFinalY() > mMaxFlingY) {
+						mScroller.setFinalY(mMaxFlingY);
+					} else if (mScroller.getFinalY() < mMinFlingY) {
+						mScroller.setFinalY(mMinFlingY);
+					}
+				}
+				mHandler.post(mScrollerRunnable);
 				mTracker.recycle();
 				mTracker = null;
 				break;
@@ -219,10 +259,17 @@ public class WheelPicker<T> extends View {
 		return true;
 	}
 
-	@Override
-	public void computeScroll() {
-		super.computeScroll();
+	private int computeDistanceToEndPoint(int remainder) {
+		if (Math.abs(remainder) > mItemHeight / 2)
+			if (mScrollOffsetY < 0)
+				return -mItemHeight - remainder;
+			else
+				return mItemHeight - remainder;
+		else
+			return -remainder;
 	}
+
+
 
 	@Override
 	public boolean performClick() {
