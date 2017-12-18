@@ -84,7 +84,7 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 滚轮滑动时的最小/最大速度
 	 */
-	private int mMinimumVelocity = 50, mMaximumVelocity = 10000;
+	private int mMinimumVelocity = 50, mMaximumVelocity = 8000;
 
 	private Handler mHandler = new Handler();
 
@@ -97,10 +97,11 @@ public class WheelPicker<T> extends View {
 					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
 					//判断超过上下限直接令其恢复到初始坐标的值
 					if (scrollerCurrY > visibleItemCount * mItemHeight) {
-						scrollerCurrY = scrollerCurrY % (mDataList.size() * mItemHeight);
+						scrollerCurrY = mScroller.getCurrY() % (mDataList.size() * mItemHeight);
 					} else if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
 						scrollerCurrY = (scrollerCurrY % mDataList.size() * mItemHeight) + mDataList.size() * mItemHeight;
 					}
+
 				}
 				mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
@@ -234,18 +235,22 @@ public class WheelPicker<T> extends View {
 			int pos = drawDataPos;
 			if (mIsCyclic) {
 				if (drawDataPos < 0) {
-					pos = mDataList.size() + drawDataPos;
+					//将数据集限定在0 ~ mDataList.size()-1之间
+					while (pos < 0) {
+						pos += mDataList.size();
+					}
 				} else if (drawDataPos > mDataList.size() - 1) {
-					pos = drawDataPos - mDataList.size();
+					//将数据集限定在0 ~ mDataList.size()-1之间
+					while (pos >= mDataList.size()) {
+						pos -= mDataList.size();
+					}
 				}
 			} else {
 				if (drawDataPos < 0 || drawDataPos > mDataList.size() - 1) {
 					continue;
 				}
 			}
-			if (pos < 0 || pos > mDataList.size() -1) {
-				continue;
-			}
+
 			T t = mDataList.get(pos);
 			int drawY = mItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 
@@ -264,7 +269,6 @@ public class WheelPicker<T> extends View {
 			mTracker = VelocityTracker.obtain();
 		}
 		mTracker.addMovement(event);
-
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				if (!mScroller.isFinished()) {

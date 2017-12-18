@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		WheelPicker<String> wheelPicker = findViewById(R.id.wheel_picker);
 		List<String> list = new ArrayList<>();
-		for (int i = 0; i < 20; i ++) {
+		for (int i = 0; i < 2; i ++) {
 			list.add("第" + i);
 		}
 		wheelPicker.setDataList(list);
