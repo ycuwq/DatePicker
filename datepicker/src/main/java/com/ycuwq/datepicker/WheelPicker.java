@@ -2,7 +2,6 @@ package com.ycuwq.datepicker;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,13 +23,23 @@ import java.util.List;
  * 滚动选择器
  * Created by yangchen on 2017/12/12.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class WheelPicker<T> extends View {
 	private final String TAG = getClass().getSimpleName();
+
+	/**
+	 * 数据集合
+	 */
 	private List<T> mDataList;
+	/**
+	 * 选择的Text的颜色
+	 */
 	private int mTextColor = Color.BLACK;
-	private Paint mPaint;
-	private Camera mCamera;
+
 	private int mTextSize = 80;
+
+	private Paint mPaint;
+
 	private int mTextMaxWidth, mTextMaxHeight;
 	private int mHalfVisibleItemCount = 2;
 
@@ -53,23 +62,47 @@ public class WheelPicker<T> extends View {
 	private VelocityTracker mTracker;
 
 	private int mTouchDownY;
+	/**
+	 * Y轴Scroll滚动的位移
+	 */
 	private int mScrollOffsetY;
+
+	/**
+	 * 最后手指Down事件的Y轴坐标，用于计算拖动距离
+	 */
 	private int mLastDownY;
-	private boolean mIsCyclic;
 
-	private Handler mHandler = new Handler();
+	/**
+	 * 是否循环读取
+	 */
+	private boolean mIsCyclic = true;
 
+	/**
+	 * 最大可以Fling的距离
+	 */
 	private int mMaxFlingY, mMinFlingY;
 	/**
 	 * 滚轮滑动时的最小/最大速度
 	 */
 	private int mMinimumVelocity = 50, mMaximumVelocity = 10000;
 
+	private Handler mHandler = new Handler();
+
 	private Runnable mScrollerRunnable = new Runnable() {
 		@Override
 		public void run() {
 			if (mScroller.computeScrollOffset()) {
-				mScrollOffsetY = mScroller.getCurrY();
+				int scrollerCurrY = mScroller.getCurrY();
+				if (mIsCyclic) {
+					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
+					//判断超过上下限直接令其恢复到初始坐标的值
+					if (scrollerCurrY > visibleItemCount * mItemHeight) {
+						scrollerCurrY = scrollerCurrY % (mDataList.size() * mItemHeight);
+					} else if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+						scrollerCurrY = (scrollerCurrY % mDataList.size() * mItemHeight) + mDataList.size() * mItemHeight;
+					}
+				}
+				mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
 			}
@@ -113,7 +146,7 @@ public class WheelPicker<T> extends View {
 		if (mDataList.size() == 0) {
 			return;
 		}
-		mTextMaxWidth = (int) mPaint.measureText(mDataList.get(0).toString());
+		mTextMaxWidth = (int) mPaint.measureText(mDataList.get(mDataList.size() - 1).toString());
 		Paint.FontMetrics metrics = mPaint.getFontMetrics();
 		mTextMaxHeight = (int) (metrics.bottom - metrics.top);
 	}
@@ -164,6 +197,11 @@ public class WheelPicker<T> extends View {
 		setMeasuredDimension(measureSize(specWidthMode, specWidthSize, width),
 				measureSize(specHeightMode, specHeightSize, height));
 	}
+
+	/**
+	 * 计算Fling极限
+	 * 如果为Cyclic模式则为Integer的极限值，如果正常模式，则为一整个数据集的上下限。
+	 */
 	private void computeFlingLimitY() {
 		int currentItemOffset = mCurrentItemPosition * mItemHeight;
 		mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
@@ -190,12 +228,25 @@ public class WheelPicker<T> extends View {
 		int drawnDataStartPos = - mScrollOffsetY / mItemHeight;
 		mPaint.setColor(mTextColor);
 		mPaint.setStyle(Paint.Style.FILL);
-		for (int drawDataPos = drawnDataStartPos - mHalfVisibleItemCount;
+		//首尾各多绘制一个用于缓冲
+		for (int drawDataPos = drawnDataStartPos - mHalfVisibleItemCount - 1;
             drawDataPos <= drawnDataStartPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
-			if (drawDataPos < 0 || drawDataPos > mDataList.size() - 1) {
+			int pos = drawDataPos;
+			if (mIsCyclic) {
+				if (drawDataPos < 0) {
+					pos = mDataList.size() + drawDataPos;
+				} else if (drawDataPos > mDataList.size() - 1) {
+					pos = drawDataPos - mDataList.size();
+				}
+			} else {
+				if (drawDataPos < 0 || drawDataPos > mDataList.size() - 1) {
+					continue;
+				}
+			}
+			if (pos < 0 || pos > mDataList.size() -1) {
 				continue;
 			}
-			T t = mDataList.get(drawDataPos);
+			T t = mDataList.get(pos);
 			int drawY = mItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 
 			canvas.drawText(t.toString(), mItemDrawX, drawY, mPaint);
@@ -224,9 +275,8 @@ public class WheelPicker<T> extends View {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				if (Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
-
+					break;
 				}
-
 				float move = event.getY() - mLastDownY;
 				mScrollOffsetY += move;
 				mLastDownY = (int) event.getY();
