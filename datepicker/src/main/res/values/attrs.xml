@@ -2,5 +2,13 @@
 <resources>
     <declare-styleable name="WheelPicker">
         <attr name="visibleItemCount" format="integer"/>
+        <attr name="itemTextSize" format="dimension"/>
+        <attr name="itemMaximumWidthText" format="string"/>
+        <attr name="itemTextColor" format="color"/>
+        <attr name="selectedTextColor" format="color"/>
+        <attr name="selectedItemPosition" format="integer"/>
+        <attr name="wheelCyclic" format="boolean"/>
+        <attr name="wheelCurtain" format="boolean"/>
+        <attr name="wheelCurtainColor" format="color"/>
     </declare-styleable>
 </resources>

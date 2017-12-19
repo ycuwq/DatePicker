@@ -34,9 +34,9 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 选择的Text的颜色
 	 */
-	private int mTextColor = Color.BLACK;
+	private int mTextColor;
 
-	private int mTextSize = 80;
+	private int mTextSize;
 
 	private Paint mPaint;
 
@@ -120,16 +120,23 @@ public class WheelPicker<T> extends View {
 
 	public WheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
-		a.recycle();
+		initAttrs(context, attrs);
 		initPaint();
 		mDrawnRect = new Rect();
 		mChooseRect = new Rect();
 		mScroller = new Scroller(context);
 		ViewConfiguration configuration = ViewConfiguration.get(context);
 		mTouchSlop = configuration.getScaledTouchSlop();
+	}
 
+	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
+		mTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_itemTextSize,
+				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
+		mTextColor = a.getColor(R.styleable.WheelPicker_itemTextColor,
+				Color.BLACK);
+
+		a.recycle();
 	}
 
 
