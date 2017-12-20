@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="WheelPicker">
-        <attr name="visibleItemCount" format="integer"/>
+        <attr name="halfVisibleItemCount" format="integer"/>
         <attr name="itemTextSize" format="dimension"/>
         <attr name="itemMaximumWidthText" format="string"/>
         <attr name="itemTextColor" format="color"/>

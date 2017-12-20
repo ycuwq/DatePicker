@@ -9,6 +9,7 @@
 
     <com.ycuwq.datepicker.WheelPicker
         android:id="@+id/wheel_picker"
+        app:wheelCyclic="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

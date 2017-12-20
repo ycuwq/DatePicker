@@ -7,8 +7,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -34,14 +36,20 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 选择的Text的颜色
 	 */
+	@ColorInt
 	private int mTextColor;
 
 	private int mTextSize;
 
+	@ColorInt
+	private int mSelectItemTextColor;
+
+	private String mItemMaximumWidthText;
+
 	private Paint mPaint;
 
 	private int mTextMaxWidth, mTextMaxHeight;
-	private int mHalfVisibleItemCount = 2;
+	private int mHalfVisibleItemCount;
 
 	private int mItemSpace = 8;
 
@@ -90,15 +98,11 @@ public class WheelPicker<T> extends View {
 
 	private OnWheelChangeListener mOnWheelChangeListener;
 
+	private int mLastSelectedPosition = -1;
+
 	private Runnable mScrollerRunnable = new Runnable() {
 		@Override
 		public void run() {
-
-			if (mScroller.isFinished()) {
-				if (mItemHeight == 0) {
-					return;
-				}
-			}
 
 			if (mScroller.computeScrollOffset()) {
 				int scrollerCurrY = mScroller.getCurrY();
@@ -115,6 +119,28 @@ public class WheelPicker<T> extends View {
 				mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
+			}
+			if (mScroller.isFinished()) {
+				if (mOnWheelChangeListener == null) {
+					return;
+				}
+				if (mItemHeight == 0) {
+					return;
+				}
+				int position = -mScrollOffsetY / mItemHeight;
+				if (mIsCyclic) {
+					//当是循环状态时，根据循环效果的实现机制，mScrollOffsetY会超过list的大小，这里将position修正。
+					while (position >= mDataList.size()) {
+						position -= mDataList.size();
+					}
+					while (position < 0) {
+						position += mDataList.size();
+					}
+				}
+				if (mLastSelectedPosition != position) {
+					mOnWheelChangeListener.onWheelSelected(position);
+				}
+				mLastSelectedPosition = position;
 			}
 		}
 	};
@@ -144,7 +170,10 @@ public class WheelPicker<T> extends View {
 				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
 		mTextColor = a.getColor(R.styleable.WheelPicker_itemTextColor,
 				Color.BLACK);
-
+		mIsCyclic = a.getBoolean(R.styleable.WheelPicker_wheelCyclic, false);
+		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 3);
+		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
+		mSelectItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
 		a.recycle();
 	}
 
@@ -167,7 +196,11 @@ public class WheelPicker<T> extends View {
 		if (mDataList.size() == 0) {
 			return;
 		}
-		mTextMaxWidth = (int) mPaint.measureText(mDataList.get(mDataList.size() - 1).toString());
+		if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
+			mTextMaxHeight = (int) mPaint.measureText(mItemMaximumWidthText);
+		} else {
+			mTextMaxWidth = (int) mPaint.measureText(mDataList.get(0).toString());
+		}
 		Paint.FontMetrics metrics = mPaint.getFontMetrics();
 		mTextMaxHeight = (int) (metrics.bottom - metrics.top);
 	}
@@ -246,12 +279,11 @@ public class WheelPicker<T> extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		int drawnDataStartPos = - mScrollOffsetY / mItemHeight;
-		mPaint.setColor(mTextColor);
+		int drawnSelectedPos = - mScrollOffsetY / mItemHeight;
 		mPaint.setStyle(Paint.Style.FILL);
 		//首尾各多绘制一个用于缓冲
-		for (int drawDataPos = drawnDataStartPos - mHalfVisibleItemCount - 1;
-            drawDataPos <= drawnDataStartPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
+		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
+            drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
 			int pos = drawDataPos;
 			if (mIsCyclic) {
 				if (drawDataPos < 0) {
@@ -270,7 +302,11 @@ public class WheelPicker<T> extends View {
 					continue;
 				}
 			}
-
+			if (drawnSelectedPos == drawDataPos) {
+				mPaint.setColor(mSelectItemTextColor);
+			} else {
+				mPaint.setColor(mTextColor);
+			}
 			T t = mDataList.get(pos);
 			int drawY = mItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 
