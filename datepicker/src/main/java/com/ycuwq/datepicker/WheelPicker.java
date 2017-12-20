@@ -88,9 +88,18 @@ public class WheelPicker<T> extends View {
 
 	private Handler mHandler = new Handler();
 
+	private OnWheelChangeListener mOnWheelChangeListener;
+
 	private Runnable mScrollerRunnable = new Runnable() {
 		@Override
 		public void run() {
+
+			if (mScroller.isFinished()) {
+				if (mItemHeight == 0) {
+					return;
+				}
+			}
+
 			if (mScroller.computeScrollOffset()) {
 				int scrollerCurrY = mScroller.getCurrY();
 				if (mIsCyclic) {
@@ -139,6 +148,10 @@ public class WheelPicker<T> extends View {
 		a.recycle();
 	}
 
+
+	public void setOnWheelChangeListener(OnWheelChangeListener onWheelChangeListener) {
+		mOnWheelChangeListener = onWheelChangeListener;
+	}
 
 	public void setDataList(@NonNull List<T> dataList) {
 		mDataList = dataList;
@@ -330,10 +343,12 @@ public class WheelPicker<T> extends View {
 			return -remainder;
 	}
 
-
-
 	@Override
 	public boolean performClick() {
 		return super.performClick();
+	}
+
+	public interface OnWheelChangeListener {
+		void onWheelSelected(int position);
 	}
 }
