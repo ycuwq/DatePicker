@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -55,7 +56,7 @@ public class WheelPicker<T> extends View {
 
 	private int mItemHeight;
 
-	private int mCurrentItemPosition;
+	private int mInitSelectPosition;
 
 	private Rect mDrawnRect;
 
@@ -106,17 +107,23 @@ public class WheelPicker<T> extends View {
 
 			if (mScroller.computeScrollOffset()) {
 				int scrollerCurrY = mScroller.getCurrY();
-				if (mIsCyclic) {
+                if (mIsCyclic) {
 					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
 					//判断超过上下限直接令其恢复到初始坐标的值
-					if (scrollerCurrY > visibleItemCount * mItemHeight) {
-						scrollerCurrY = mScroller.getCurrY() % (mDataList.size() * mItemHeight);
-					} else if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-						scrollerCurrY = (scrollerCurrY % mDataList.size() * mItemHeight) + mDataList.size() * mItemHeight;
-					}
-
+//					if (scrollerCurrY > visibleItemCount * mItemHeight) {
+//						scrollerCurrY = mScroller.getCurrY() % (mDataList.size() * mItemHeight);
+//					} else if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+//						scrollerCurrY = (scrollerCurrY % mDataList.size() * mItemHeight) + mDataList.size() * mItemHeight;
+//					}
+                    while (scrollerCurrY > visibleItemCount * mItemHeight) {
+                        scrollerCurrY -= mDataList.size() * mItemHeight;
+                    }
+                    while (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+                        scrollerCurrY += mDataList.size() * mItemHeight;
+                    }
 				}
-				mScrollOffsetY = scrollerCurrY;
+                Log.d(TAG, "run: " + scrollerCurrY);
+                mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
 			}
@@ -174,6 +181,7 @@ public class WheelPicker<T> extends View {
 		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 3);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
 		mSelectItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
+        mInitSelectPosition = a.getInteger(R.styleable.WheelPicker_selectedItemPosition, 0);
 		a.recycle();
 	}
 
@@ -188,7 +196,7 @@ public class WheelPicker<T> extends View {
 			return;
 		}
 		computeTextSize();
-		mCurrentItemPosition = 0;
+//		mInitSelectPosition = 0;
 	}
 
 	public void computeTextSize() {
@@ -197,7 +205,7 @@ public class WheelPicker<T> extends View {
 			return;
 		}
 		if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
-			mTextMaxHeight = (int) mPaint.measureText(mItemMaximumWidthText);
+            mTextMaxWidth = (int) mPaint.measureText(mItemMaximumWidthText);
 		} else {
 			mTextMaxWidth = (int) mPaint.measureText(mDataList.get(0).toString());
 		}
@@ -257,10 +265,9 @@ public class WheelPicker<T> extends View {
 	 * 如果为Cyclic模式则为Integer的极限值，如果正常模式，则为一整个数据集的上下限。
 	 */
 	private void computeFlingLimitY() {
-		int currentItemOffset = mCurrentItemPosition * mItemHeight;
 		mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
-				- mItemHeight * (mDataList.size() - 1) + currentItemOffset;
-		mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : currentItemOffset;
+				- mItemHeight * (mDataList.size() - 1);
+		mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : 0;
 	}
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -274,6 +281,8 @@ public class WheelPicker<T> extends View {
 		mChooseRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
 		computeFlingLimitY();
+
+		mScrollOffsetY = -mItemHeight * mInitSelectPosition;
 	}
 
 	@Override
@@ -286,19 +295,19 @@ public class WheelPicker<T> extends View {
             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
 			int pos = drawDataPos;
 			if (mIsCyclic) {
-				if (drawDataPos < 0) {
+				if (pos < 0) {
 					//将数据集限定在0 ~ mDataList.size()-1之间
 					while (pos < 0) {
 						pos += mDataList.size();
 					}
-				} else if (drawDataPos > mDataList.size() - 1) {
+				} else if (pos > mDataList.size() - 1) {
 					//将数据集限定在0 ~ mDataList.size()-1之间
 					while (pos >= mDataList.size()) {
 						pos -= mDataList.size();
 					}
 				}
 			} else {
-				if (drawDataPos < 0 || drawDataPos > mDataList.size() - 1) {
+				if (pos < 0 || pos > mDataList.size() - 1) {
 					continue;
 				}
 			}
@@ -345,8 +354,9 @@ public class WheelPicker<T> extends View {
 			case MotionEvent.ACTION_UP:
 				mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 				int velocity = (int) mTracker.getYVelocity();
-				if (Math.abs(velocity) > mMinimumVelocity) {
-					mScroller.fling(0, mScrollOffsetY, 0, (int) mTracker.getYVelocity(),
+                Log.d(TAG, "onTouchEvent: " + velocity);
+                if (Math.abs(velocity) > mMinimumVelocity) {
+					mScroller.fling(0, mScrollOffsetY, 0, velocity,
 							0, 0, mMinFlingY, mMaxFlingY);
 					mScroller.setFinalY(mScroller.getFinalY() +
 							computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
