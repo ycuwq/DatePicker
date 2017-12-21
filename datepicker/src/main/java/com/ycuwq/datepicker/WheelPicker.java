@@ -2,8 +2,10 @@ package com.ycuwq.datepicker;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -35,34 +37,63 @@ public class WheelPicker<T> extends View {
 	 */
 	private List<T> mDataList;
 	/**
-	 * 选择的Text的颜色
+	 * Item的Text的颜色
 	 */
 	@ColorInt
 	private int mTextColor;
 
 	private int mTextSize;
 
+	/**
+	 * 选中的Item的Text颜色
+	 */
 	@ColorInt
-	private int mSelectItemTextColor;
+	private int mSelectedItemTextColor;
 
-	private String mItemMaximumWidthText;
 
 	private Paint mPaint;
 
+	/**
+	 * 最大的一个Item的文本的宽高
+	 */
 	private int mTextMaxWidth, mTextMaxHeight;
+	/**
+	 * 输入的一段文字，可以用来测量 mTextMaxWidth
+	 */
+	private String mItemMaximumWidthText;
+
+	/**
+	 * 显示的Item一半的数量（中心Item上下两边分别的数量）
+	 * 总显示的数量为 mHalfVisibleItemCount * 2 + 1
+	 */
 	private int mHalfVisibleItemCount;
 
+	/**
+	 * 两个Item之间的高度间隔
+	 */
 	private int mItemSpace = 8;
 
 	private int mItemHeight;
 
-	private int mInitSelectPosition;
+	/**
+	 * 初始化被选中的Item的位置
+	 */
+	private int mInitSelectedPosition;
 
+	/**
+	 * 整个控件的可绘制面积
+	 */
 	private Rect mDrawnRect;
 
-	private Rect mChooseRect;
+	/**
+	 * 中心被选中的Item的坐标矩形
+	 */
+	private Rect mSelectedItemRect;
 
-	private int mItemDrawX, mItemDrawY;
+	/**
+	 * 中心被选中的Item的绘制坐标
+	 */
+	private int mSelectedItemDrawX, mSelectedItemDrawY;
 
 	private Scroller mScroller;
 
@@ -90,10 +121,18 @@ public class WheelPicker<T> extends View {
 	 * 最大可以Fling的距离
 	 */
 	private int mMaxFlingY, mMinFlingY;
+
 	/**
 	 * 滚轮滑动时的最小/最大速度
 	 */
-	private int mMinimumVelocity = 50, mMaximumVelocity = 8000;
+	private int mMinimumVelocity = 50, mMaximumVelocity = 12000;
+
+
+	private boolean mIsCurved;
+
+	private Camera mCamera;
+	private Matrix mMatrixRotate, mMatrixDepth;
+
 
 	private Handler mHandler = new Handler();
 
@@ -110,11 +149,7 @@ public class WheelPicker<T> extends View {
                 if (mIsCyclic) {
 					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
 					//判断超过上下限直接令其恢复到初始坐标的值
-//					if (scrollerCurrY > visibleItemCount * mItemHeight) {
-//						scrollerCurrY = mScroller.getCurrY() % (mDataList.size() * mItemHeight);
-//					} else if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-//						scrollerCurrY = (scrollerCurrY % mDataList.size() * mItemHeight) + mDataList.size() * mItemHeight;
-//					}
+
                     while (scrollerCurrY > visibleItemCount * mItemHeight) {
                         scrollerCurrY -= mDataList.size() * mItemHeight;
                     }
@@ -122,7 +157,6 @@ public class WheelPicker<T> extends View {
                         scrollerCurrY += mDataList.size() * mItemHeight;
                     }
 				}
-                Log.d(TAG, "run: " + scrollerCurrY);
                 mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
@@ -165,8 +199,14 @@ public class WheelPicker<T> extends View {
 		initAttrs(context, attrs);
 		initPaint();
 		mDrawnRect = new Rect();
-		mChooseRect = new Rect();
+		mSelectedItemRect = new Rect();
 		mScroller = new Scroller(context);
+
+		mCamera = new Camera();
+
+		mMatrixRotate = new Matrix();
+		mMatrixDepth = new Matrix();
+
 		ViewConfiguration configuration = ViewConfiguration.get(context);
 		mTouchSlop = configuration.getScaledTouchSlop();
 	}
@@ -180,8 +220,8 @@ public class WheelPicker<T> extends View {
 		mIsCyclic = a.getBoolean(R.styleable.WheelPicker_wheelCyclic, false);
 		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 3);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
-		mSelectItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
-        mInitSelectPosition = a.getInteger(R.styleable.WheelPicker_selectedItemPosition, 0);
+		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
+        mInitSelectedPosition = a.getInteger(R.styleable.WheelPicker_selectedItemPosition, 0);
 		a.recycle();
 	}
 
@@ -196,7 +236,7 @@ public class WheelPicker<T> extends View {
 			return;
 		}
 		computeTextSize();
-//		mInitSelectPosition = 0;
+
 	}
 
 	public void computeTextSize() {
@@ -253,7 +293,9 @@ public class WheelPicker<T> extends View {
 
 		int width = mTextMaxWidth;
 		int height = mTextMaxHeight * getVisibleItemCount() + mItemSpace * (mHalfVisibleItemCount - 1);
-
+		if (mIsCurved) {
+			height = (int) (2 * height / Math.PI);
+		}
 		width += getPaddingLeft() + getPaddingRight();
 		height += getPaddingTop() + getPaddingBottom();
 		setMeasuredDimension(measureSize(specWidthMode, specWidthSize, width),
@@ -275,14 +317,22 @@ public class WheelPicker<T> extends View {
 		mDrawnRect.set(getPaddingLeft(), getPaddingTop(),
 				getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
 		mItemHeight = mDrawnRect.height() / getVisibleItemCount();
-		mItemDrawX = mDrawnRect.centerX();
-		mItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
+		mSelectedItemDrawX = mDrawnRect.centerX();
+		mSelectedItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
 		//中间的Item边框
-		mChooseRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
+		mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
 		computeFlingLimitY();
 
-		mScrollOffsetY = -mItemHeight * mInitSelectPosition;
+		mScrollOffsetY = -mItemHeight * mInitSelectedPosition;
+	}
+
+	private int computeSpace(int degree) {
+		return (int) (Math.sin(Math.toRadians(degree)) * (mDrawnRect.height() / 2));
+	}
+
+	private int computeDepth(int degree) {
+		return (int) (mDrawnRect.height() / 2 - Math.cos(Math.toRadians(degree)) * mDrawnRect.height() / 2);
 	}
 
 	@Override
@@ -312,17 +362,20 @@ public class WheelPicker<T> extends View {
 				}
 			}
 			if (drawnSelectedPos == drawDataPos) {
-				mPaint.setColor(mSelectItemTextColor);
+				mPaint.setColor(mSelectedItemTextColor);
 			} else {
 				mPaint.setColor(mTextColor);
 			}
-			T t = mDataList.get(pos);
-			int drawY = mItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 
-			canvas.drawText(t.toString(), mItemDrawX, drawY, mPaint);
+
+
+			T t = mDataList.get(pos);
+			int itemDrawY = mSelectedItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
+
+			canvas.drawText(t.toString(), mSelectedItemDrawX, itemDrawY, mPaint);
 		}
 		mPaint.setStyle(Paint.Style.STROKE);
-		canvas.drawRect(mChooseRect, mPaint);
+		canvas.drawRect(mSelectedItemRect, mPaint);
 
 	}
 
