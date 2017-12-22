@@ -2,10 +2,8 @@ package com.ycuwq.datepicker;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -50,6 +48,10 @@ public class WheelPicker<T> extends View {
 	@ColorInt
 	private int mSelectedItemTextColor;
 
+    /**
+     * 选中的Item的Text大小
+     */
+	private int mSelectedItemTextSize;
 
 	private Paint mPaint;
 
@@ -71,7 +73,7 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 两个Item之间的高度间隔
 	 */
-	private int mItemSpace = 8;
+	private int mItemHeightSpace;
 
 	private int mItemHeight;
 
@@ -80,7 +82,13 @@ public class WheelPicker<T> extends View {
 	 */
 	private int mInitSelectedPosition;
 
-	/**
+    /**
+     * 是否将中间的Item放大
+     */
+    private boolean mIsZoomInCenterItem;
+
+
+    /**
 	 * 整个控件的可绘制面积
 	 */
 	private Rect mDrawnRect;
@@ -91,9 +99,9 @@ public class WheelPicker<T> extends View {
 	private Rect mSelectedItemRect;
 
 	/**
-	 * 中心被选中的Item的绘制坐标
+	 * 第一个Item的绘制Text的坐标
 	 */
-	private int mSelectedItemDrawX, mSelectedItemDrawY;
+	private int mFirstItemDrawX, mFirstItemDrawY;
 
 	private Scroller mScroller;
 
@@ -127,11 +135,6 @@ public class WheelPicker<T> extends View {
 	 */
 	private int mMinimumVelocity = 50, mMaximumVelocity = 12000;
 
-
-	private boolean mIsCurved;
-
-	private Camera mCamera;
-	private Matrix mMatrixRotate, mMatrixDepth;
 
 
 	private Handler mHandler = new Handler();
@@ -202,11 +205,6 @@ public class WheelPicker<T> extends View {
 		mSelectedItemRect = new Rect();
 		mScroller = new Scroller(context);
 
-		mCamera = new Camera();
-
-		mMatrixRotate = new Matrix();
-		mMatrixDepth = new Matrix();
-
 		ViewConfiguration configuration = ViewConfiguration.get(context);
 		mTouchSlop = configuration.getScaledTouchSlop();
 	}
@@ -221,7 +219,12 @@ public class WheelPicker<T> extends View {
 		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 3);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
 		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
+        mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
+                getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
         mInitSelectedPosition = a.getInteger(R.styleable.WheelPicker_selectedItemPosition, 0);
+        mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
+                getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
+        mIsZoomInCenterItem = a.getBoolean(R.styleable.WheelPicker_zoomInCenterItem, true);
 		a.recycle();
 	}
 
@@ -262,8 +265,7 @@ public class WheelPicker<T> extends View {
 	}
 
 	/**
-	 * 显示的个数等于上下两边Item的个数+ 中间的ITem
-	 * @return
+	 * 显示的个数等于上下两边Item的个数+ 中间的Item
 	 */
 	private int getVisibleItemCount() {
 		return mHalfVisibleItemCount * 2 + 1;
@@ -292,10 +294,8 @@ public class WheelPicker<T> extends View {
 		int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
 		int width = mTextMaxWidth;
-		int height = mTextMaxHeight * getVisibleItemCount() + mItemSpace * (mHalfVisibleItemCount - 1);
-		if (mIsCurved) {
-			height = (int) (2 * height / Math.PI);
-		}
+		int height = (mTextMaxHeight + mItemHeightSpace) * getVisibleItemCount();
+
 		width += getPaddingLeft() + getPaddingRight();
 		height += getPaddingTop() + getPaddingBottom();
 		setMeasuredDimension(measureSize(specWidthMode, specWidthSize, width),
@@ -317,8 +317,8 @@ public class WheelPicker<T> extends View {
 		mDrawnRect.set(getPaddingLeft(), getPaddingTop(),
 				getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
 		mItemHeight = mDrawnRect.height() / getVisibleItemCount();
-		mSelectedItemDrawX = mDrawnRect.centerX();
-		mSelectedItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
+		mFirstItemDrawX = mDrawnRect.centerX();
+		mFirstItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
 		//中间的Item边框
 		mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
@@ -327,13 +327,7 @@ public class WheelPicker<T> extends View {
 		mScrollOffsetY = -mItemHeight * mInitSelectedPosition;
 	}
 
-	private int computeSpace(int degree) {
-		return (int) (Math.sin(Math.toRadians(degree)) * (mDrawnRect.height() / 2));
-	}
 
-	private int computeDepth(int degree) {
-		return (int) (mDrawnRect.height() / 2 - Math.cos(Math.toRadians(degree)) * mDrawnRect.height() / 2);
-	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -361,18 +355,29 @@ public class WheelPicker<T> extends View {
 					continue;
 				}
 			}
+			//在中间位置的Item作为被选中的。
 			if (drawnSelectedPos == drawDataPos) {
 				mPaint.setColor(mSelectedItemTextColor);
 			} else {
 				mPaint.setColor(mTextColor);
 			}
 
-
-
 			T t = mDataList.get(pos);
-			int itemDrawY = mSelectedItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
-
-			canvas.drawText(t.toString(), mSelectedItemDrawX, itemDrawY, mPaint);
+			int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
+			//开启此选项,会将越靠近中心的Item字体放大
+			if (mIsZoomInCenterItem) {
+                int center = mFirstItemDrawY + mItemHeight * mHalfVisibleItemCount;
+                int distance = Math.abs(center - itemDrawY);
+                if (distance < mItemHeight) {
+                    float addedSize = (mItemHeight - distance) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
+                    mPaint.setTextSize(mTextSize + addedSize);
+                } else {
+                    mPaint.setTextSize(mTextSize);
+                }
+            } else {
+                mPaint.setTextSize(mTextSize);
+            }
+            canvas.drawText(t.toString(), mFirstItemDrawX, itemDrawY, mPaint);
 		}
 		mPaint.setStyle(Paint.Style.STROKE);
 		canvas.drawRect(mSelectedItemRect, mPaint);
