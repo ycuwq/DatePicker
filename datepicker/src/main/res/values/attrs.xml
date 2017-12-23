@@ -5,14 +5,16 @@
         <attr name="itemTextSize" format="dimension"/>
         <attr name="itemMaximumWidthText" format="string"/>
         <attr name="itemTextColor" format="color"/>
+        <attr name="textGradual" format="boolean"/>
         <attr name="selectedTextColor" format="color"/>
         <attr name="selectedTextSize" format="dimension"/>
         <attr name="selectedItemPosition" format="integer"/>
         <attr name="itemHeightSpace" format="dimension"/>
         <attr name="zoomInCenterItem" format="boolean"/>
-
         <attr name="wheelCyclic" format="boolean"/>
         <attr name="wheelCurtain" format="boolean"/>
         <attr name="wheelCurtainColor" format="color"/>
+        <attr name="wheelCurtainBorder" format="boolean"/>
+        <attr name="wheelCurtainBorderColor" format="color"/>
     </declare-styleable>
 </resources>

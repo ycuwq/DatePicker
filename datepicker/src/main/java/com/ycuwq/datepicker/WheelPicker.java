@@ -43,6 +43,11 @@ public class WheelPicker<T> extends View {
 	private int mTextSize;
 
 	/**
+	 * 字体渐变，开启后越靠近边缘，字体越模糊
+	 */
+	private boolean mIsTextGradual;
+
+	/**
 	 * 选中的Item的Text颜色
 	 */
 	@ColorInt
@@ -87,6 +92,24 @@ public class WheelPicker<T> extends View {
      */
     private boolean mIsZoomInCenterItem;
 
+	/**
+	 * 是否显示幕布，中央Item的额外颜色
+	 */
+	private boolean mIsShowCurtain;
+
+	/**
+	 * 幕布边框
+	 */
+    @ColorInt
+    private int mCurtainColor;
+
+	/**
+	 * 是否显示幕布的边框
+	 */
+	private boolean mIsShowCurtainBorder;
+
+	@ColorInt
+	private int mCurtainBorderColor;
 
     /**
 	 * 整个控件的可绘制面积
@@ -102,6 +125,11 @@ public class WheelPicker<T> extends View {
 	 * 第一个Item的绘制Text的坐标
 	 */
 	private int mFirstItemDrawX, mFirstItemDrawY;
+
+	/**
+	 * 中心的Item绘制text的Y轴坐标
+	 */
+	private int mCenterItemDrawnY;
 
 	private Scroller mScroller;
 
@@ -215,8 +243,9 @@ public class WheelPicker<T> extends View {
 				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
 		mTextColor = a.getColor(R.styleable.WheelPicker_itemTextColor,
 				Color.BLACK);
+		mIsTextGradual = a.getBoolean(R.styleable.WheelPicker_textGradual, true);
 		mIsCyclic = a.getBoolean(R.styleable.WheelPicker_wheelCyclic, false);
-		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 3);
+		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 2);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
 		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
         mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
@@ -225,6 +254,11 @@ public class WheelPicker<T> extends View {
         mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
                 getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
         mIsZoomInCenterItem = a.getBoolean(R.styleable.WheelPicker_zoomInCenterItem, true);
+        mIsShowCurtain = a.getBoolean(R.styleable.WheelPicker_wheelCurtain, true);
+        mCurtainColor = a.getColor(R.styleable.WheelPicker_wheelCurtainColor,
+		        Color.parseColor("#303d3d3d"));
+        mIsShowCurtainBorder = a.getBoolean(R.styleable.WheelPicker_wheelCurtainBorder, true);
+        mCurtainBorderColor = a.getColor(R.styleable.WheelPicker_wheelCurtainBorderColor, Color.BLACK);
 		a.recycle();
 	}
 
@@ -261,7 +295,7 @@ public class WheelPicker<T> extends View {
 		mPaint.setStyle(Paint.Style.FILL);
 		mPaint.setTextAlign(Paint.Align.CENTER);
 		mPaint.setColor(mTextColor);
-		mPaint.setTextSize(mTextSize);
+		mPaint.setTextSize(mSelectedItemTextSize);
 	}
 
 	/**
@@ -323,7 +357,7 @@ public class WheelPicker<T> extends View {
 		mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
 		computeFlingLimitY();
-
+		mCenterItemDrawnY = mFirstItemDrawY + mItemHeight * mHalfVisibleItemCount;
 		mScrollOffsetY = -mItemHeight * mInitSelectedPosition;
 	}
 
@@ -364,12 +398,31 @@ public class WheelPicker<T> extends View {
 
 			T t = mDataList.get(pos);
 			int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
+			//距离中心的Y轴距离
+			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
+
+			if (mIsTextGradual) {
+//				if (distanceY > mItemHeight) {
+					float radio;
+					if (itemDrawY > mCenterItemDrawnY) {
+						radio =  (mDrawnRect.height() - itemDrawY) /
+								(float) (mDrawnRect.height() - (mCenterItemDrawnY));
+
+					} else {
+						radio = itemDrawY / (float) mCenterItemDrawnY;
+					}
+					mPaint.setAlpha((int) (radio * 255));
+//				} else {
+//					mPaint.setAlpha(255);
+//				}
+			} else {
+				mPaint.setAlpha(255);
+			}
+
 			//开启此选项,会将越靠近中心的Item字体放大
 			if (mIsZoomInCenterItem) {
-                int center = mFirstItemDrawY + mItemHeight * mHalfVisibleItemCount;
-                int distance = Math.abs(center - itemDrawY);
-                if (distance < mItemHeight) {
-                    float addedSize = (mItemHeight - distance) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
+                if (distanceY < mItemHeight) {
+                    float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
                     mPaint.setTextSize(mTextSize + addedSize);
                 } else {
                     mPaint.setTextSize(mTextSize);
@@ -379,8 +432,16 @@ public class WheelPicker<T> extends View {
             }
             canvas.drawText(t.toString(), mFirstItemDrawX, itemDrawY, mPaint);
 		}
-		mPaint.setStyle(Paint.Style.STROKE);
-		canvas.drawRect(mSelectedItemRect, mPaint);
+		if (mIsShowCurtainBorder) {
+			mPaint.setStyle(Paint.Style.STROKE);
+			mPaint.setColor(mCurtainBorderColor);
+			canvas.drawRect(mSelectedItemRect, mPaint);
+		}
+		if (mIsShowCurtain) {
+			mPaint.setStyle(Paint.Style.FILL);
+			mPaint.setColor(mCurtainColor);
+			canvas.drawRect(mSelectedItemRect, mPaint);
+		}
 
 	}
 

@@ -11,6 +11,7 @@
         android:id="@+id/wheel_picker"
         app:itemMaximumWidthText="第000"
         app:wheelCyclic="true"
+        app:halfVisibleItemCount="2"
         android:layout_width="150dp"
         android:layout_height="wrap_content"/>
 
