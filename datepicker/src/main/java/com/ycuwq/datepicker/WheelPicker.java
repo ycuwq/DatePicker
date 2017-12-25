@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -26,7 +25,7 @@ import java.util.List;
  * 滚动选择器
  * Created by yangchen on 2017/12/12.
  */
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "unused", "SameParameterValue"})
 public class WheelPicker<T> extends View {
 	private final String TAG = getClass().getSimpleName();
 
@@ -83,9 +82,9 @@ public class WheelPicker<T> extends View {
 	private int mItemHeight;
 
 	/**
-	 * 初始化被选中的Item的位置
+	 * 当前的Item的位置
 	 */
-	private int mInitSelectedPosition;
+	private int mCurrentPosition;
 
     /**
      * 是否将中间的Item放大
@@ -163,13 +162,9 @@ public class WheelPicker<T> extends View {
 	 */
 	private int mMinimumVelocity = 50, mMaximumVelocity = 12000;
 
-
-
 	private Handler mHandler = new Handler();
 
 	private OnWheelChangeListener mOnWheelChangeListener;
-
-	private int mLastSelectedPosition = -1;
 
 	private Runnable mScrollerRunnable = new Runnable() {
 		@Override
@@ -209,10 +204,10 @@ public class WheelPicker<T> extends View {
 						position += mDataList.size();
 					}
 				}
-				if (mLastSelectedPosition != position) {
+				if (mCurrentPosition != position) {
 					mOnWheelChangeListener.onWheelSelected(position);
 				}
-				mLastSelectedPosition = position;
+				mCurrentPosition = position;
 			}
 		}
 	};
@@ -250,7 +245,7 @@ public class WheelPicker<T> extends View {
 		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
         mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
                 getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
-        mInitSelectedPosition = a.getInteger(R.styleable.WheelPicker_selectedItemPosition, 0);
+        mCurrentPosition = a.getInteger(R.styleable.WheelPicker_currentItemPosition, 0);
         mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
                 getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
         mIsZoomInCenterItem = a.getBoolean(R.styleable.WheelPicker_zoomInCenterItem, true);
@@ -263,25 +258,15 @@ public class WheelPicker<T> extends View {
 	}
 
 
-	public void setOnWheelChangeListener(OnWheelChangeListener onWheelChangeListener) {
-		mOnWheelChangeListener = onWheelChangeListener;
-	}
-
-	public void setDataList(@NonNull List<T> dataList) {
-		mDataList = dataList;
-		if (dataList.size() == 0) {
-			return;
-		}
-		computeTextSize();
-
-	}
 
 	public void computeTextSize() {
-		mTextMaxWidth = mTextMaxHeight = 0;
+        mTextMaxWidth = mTextMaxHeight = 0;
 		if (mDataList.size() == 0) {
 			return;
 		}
-		if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
+        mPaint.setTextSize(mSelectedItemTextSize);
+
+        if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
             mTextMaxWidth = (int) mPaint.measureText(mItemMaximumWidthText);
 		} else {
 			mTextMaxWidth = (int) mPaint.measureText(mDataList.get(0).toString());
@@ -296,13 +281,6 @@ public class WheelPicker<T> extends View {
 		mPaint.setTextAlign(Paint.Align.CENTER);
 		mPaint.setColor(mTextColor);
 		mPaint.setTextSize(mSelectedItemTextSize);
-	}
-
-	/**
-	 * 显示的个数等于上下两边Item的个数+ 中间的Item
-	 */
-	private int getVisibleItemCount() {
-		return mHalfVisibleItemCount * 2 + 1;
 	}
 
 	/**
@@ -341,13 +319,13 @@ public class WheelPicker<T> extends View {
 	 * 如果为Cyclic模式则为Integer的极限值，如果正常模式，则为一整个数据集的上下限。
 	 */
 	private void computeFlingLimitY() {
-		mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
+        mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
 				- mItemHeight * (mDataList.size() - 1);
 		mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : 0;
 	}
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
+        super.onSizeChanged(w, h, oldw, oldh);
 		mDrawnRect.set(getPaddingLeft(), getPaddingTop(),
 				getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
 		mItemHeight = mDrawnRect.height() / getVisibleItemCount();
@@ -358,7 +336,8 @@ public class WheelPicker<T> extends View {
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
 		computeFlingLimitY();
 		mCenterItemDrawnY = mFirstItemDrawY + mItemHeight * mHalfVisibleItemCount;
-		mScrollOffsetY = -mItemHeight * mInitSelectedPosition;
+
+		mScrollOffsetY = -mItemHeight * mCurrentPosition;
 	}
 
 
@@ -368,6 +347,7 @@ public class WheelPicker<T> extends View {
 		super.onDraw(canvas);
 		int drawnSelectedPos = - mScrollOffsetY / mItemHeight;
 		mPaint.setStyle(Paint.Style.FILL);
+
 		//首尾各多绘制一个用于缓冲
 		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
@@ -402,7 +382,6 @@ public class WheelPicker<T> extends View {
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
 
 			if (mIsTextGradual) {
-//				if (distanceY > mItemHeight) {
 					float radio;
 					if (itemDrawY > mCenterItemDrawnY) {
 						radio =  (mDrawnRect.height() - itemDrawY) /
@@ -412,10 +391,9 @@ public class WheelPicker<T> extends View {
 						radio = itemDrawY / (float) mCenterItemDrawnY;
 					}
 					mPaint.setAlpha((int) (radio * 255));
-//				} else {
-//					mPaint.setAlpha(255);
-//				}
-			} else {
+                // TODO: 17-12-25 最下方的选项字体颜色有问题。
+                // TODO: 17-12-25 缓慢切换时会卡顿。
+            } else {
 				mPaint.setAlpha(255);
 			}
 
@@ -448,7 +426,6 @@ public class WheelPicker<T> extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
 		if (mTracker == null) {
 			mTracker = VelocityTracker.obtain();
 		}
@@ -471,9 +448,14 @@ public class WheelPicker<T> extends View {
 				invalidate();
 				break;
 			case MotionEvent.ACTION_UP:
+			    if (mTouchDownY == mLastDownY) {
+			        performClick();
+                    mTracker.recycle();
+                    mTracker = null;
+			        break;
+                }
 				mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 				int velocity = (int) mTracker.getYVelocity();
-                Log.d(TAG, "onTouchEvent: " + velocity);
                 if (Math.abs(velocity) > mMinimumVelocity) {
 					mScroller.fling(0, mScrollOffsetY, 0, velocity,
 							0, 0, mMinFlingY, mMaxFlingY);
@@ -498,7 +480,12 @@ public class WheelPicker<T> extends View {
 		return true;
 	}
 
-	private int computeDistanceToEndPoint(int remainder) {
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    private int computeDistanceToEndPoint(int remainder) {
 		if (Math.abs(remainder) > mItemHeight / 2)
 			if (mScrollOffsetY < 0)
 				return -mItemHeight - remainder;
@@ -508,12 +495,214 @@ public class WheelPicker<T> extends View {
 			return -remainder;
 	}
 
-	@Override
-	public boolean performClick() {
-		return super.performClick();
-	}
 
-	public interface OnWheelChangeListener {
+    public void setOnWheelChangeListener(OnWheelChangeListener onWheelChangeListener) {
+        mOnWheelChangeListener = onWheelChangeListener;
+    }
+
+    public List<T> getDataList() {
+        return mDataList;
+    }
+
+    public void setDataList(@NonNull List<T> dataList) {
+        mDataList = dataList;
+        if (dataList.size() == 0) {
+            return;
+        }
+        computeTextSize();
+        computeFlingLimitY();
+        requestLayout();
+        postInvalidate();
+    }
+
+    public int getTextColor() {
+        return mTextColor;
+    }
+
+    /**
+     * 一般列表的文本颜色
+     * @param textColor 文本颜色
+     */
+    public void setTextColor(@ColorInt int textColor) {
+        mTextColor = textColor;
+        postInvalidate();
+    }
+
+    public int getTextSize() {
+        return mTextSize;
+    }
+
+    /**
+     * 一般列表的文本大小
+     * @param textSize 文字大小
+     */
+    public void setTextSize(int textSize) {
+        mTextSize = textSize;
+        postInvalidate();
+    }
+
+    public int getSelectedItemTextColor() {
+        return mSelectedItemTextColor;
+    }
+
+    /**
+     * 设置被选中时候的文本颜色
+     * @param selectedItemTextColor 文本颜色
+     */
+    public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+        mSelectedItemTextColor = selectedItemTextColor;
+        postInvalidate();
+    }
+
+    public int getSelectedItemTextSize() {
+        return mSelectedItemTextSize;
+    }
+
+    /**
+     * 设置被选中时候的文本大小
+     * @param selectedItemTextSize 文字大小
+     */
+    public void setSelectedItemTextSize(int selectedItemTextSize) {
+        mSelectedItemTextSize = selectedItemTextSize;
+        postInvalidate();
+    }
+
+
+    public String getItemMaximumWidthText() {
+        return mItemMaximumWidthText;
+    }
+
+    /**
+     * 设置输入的一段文字，用来测量 mTextMaxWidth
+     * @param itemMaximumWidthText 文本内容
+     */
+    public void setItemMaximumWidthText(String itemMaximumWidthText) {
+        mItemMaximumWidthText = itemMaximumWidthText;
+        requestLayout();
+        postInvalidate();
+    }
+
+    public int getHalfVisibleItemCount() {
+        return mHalfVisibleItemCount;
+    }
+
+    /**
+     * 显示的个数等于上下两边Item的个数+ 中间的Item
+     */
+    public int getVisibleItemCount() {
+        return mHalfVisibleItemCount * 2 + 1;
+    }
+
+    /**
+     * 设置显示数据量的个数的一半。
+     * 为保证总显示个数为奇数,这里将总数拆分，总数为 mHalfVisibleItemCount * 2 + 1
+     * @param halfVisibleItemCount 总数量的一半
+     */
+    public void setHalfVisibleItemCount(int halfVisibleItemCount) {
+        mHalfVisibleItemCount = halfVisibleItemCount;
+        requestLayout();
+    }
+
+    public int getItemHeightSpace() {
+        return mItemHeightSpace;
+    }
+
+    /**
+     * 设置两个Item之间的间隔
+     * @param itemHeightSpace 间隔值
+     */
+    public void setItemHeightSpace(int itemHeightSpace) {
+        mItemHeightSpace = itemHeightSpace;
+        requestLayout();
+    }
+
+    public int getCurrentPosition() {
+        return mCurrentPosition;
+    }
+
+    /**
+     * 设置当前选中的列表项,将滚动到所选位置
+     * @param currentPosition 设置的当前位置
+     */
+    public void setCurrentPosition(int currentPosition) {
+        setCurrentPosition(currentPosition, true);
+    }
+
+    /**
+     * 设置当前选中的列表位置
+     * @param currentPosition 设置的当前位置
+     * @param smoothScroll 是否平滑滚动
+     */
+    public void setCurrentPosition(final int currentPosition, boolean smoothScroll) {
+	    if (mCurrentPosition == currentPosition) {
+	        return;
+        }
+        if (smoothScroll) {
+	        post(new Runnable() {
+                @Override
+                public void run() {
+                    mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
+                    mHandler.post(mScrollerRunnable);
+                }
+            });
+        } else {
+            mCurrentPosition = currentPosition;
+            mScrollOffsetY = -mItemHeight * mCurrentPosition;
+            postInvalidate();
+            if (mOnWheelChangeListener != null) {
+                mOnWheelChangeListener.onWheelSelected(currentPosition);
+            }
+        }
+    }
+
+    public boolean isZoomInCenterItem() {
+        return mIsZoomInCenterItem;
+    }
+
+    public void setZoomInCenterItem(boolean zoomInCenterItem) {
+        mIsZoomInCenterItem = zoomInCenterItem;
+        postInvalidate();
+    }
+
+    public boolean isCyclic() {
+        return mIsCyclic;
+    }
+
+    /**
+     * 设置是否循环滚动。
+     * @param cyclic 上下边界是否相邻
+     */
+    public void setCyclic(boolean cyclic) {
+        mIsCyclic = cyclic;
+        computeFlingLimitY();
+        requestLayout();
+    }
+
+    public int getMinimumVelocity() {
+        return mMinimumVelocity;
+    }
+
+    /**
+     * 设置最小滚动速度,如果实际速度小于此速度，将不会触发滚动。
+     * @param minimumVelocity 最小速度
+     */
+    public void setMinimumVelocity(int minimumVelocity) {
+        mMinimumVelocity = minimumVelocity;
+    }
+
+    public int getMaximumVelocity() {
+        return mMaximumVelocity;
+    }
+
+    /**
+     * 设置最大滚动的速度,实际滚动速度的上限
+     * @param maximumVelocity 最大滚动速度
+     */
+    public void setMaximumVelocity(int maximumVelocity) {
+        mMaximumVelocity = maximumVelocity;
+    }
+
+    public interface OnWheelChangeListener {
 		void onWheelSelected(int position);
 	}
 }

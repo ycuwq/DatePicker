@@ -8,7 +8,7 @@
         <attr name="textGradual" format="boolean"/>
         <attr name="selectedTextColor" format="color"/>
         <attr name="selectedTextSize" format="dimension"/>
-        <attr name="selectedItemPosition" format="integer"/>
+        <attr name="currentItemPosition" format="integer"/>
         <attr name="itemHeightSpace" format="dimension"/>
         <attr name="zoomInCenterItem" format="boolean"/>
         <attr name="wheelCyclic" format="boolean"/>
