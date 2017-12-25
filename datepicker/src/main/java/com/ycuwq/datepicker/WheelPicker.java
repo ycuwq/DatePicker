@@ -390,9 +390,8 @@ public class WheelPicker<T> extends View {
 					} else {
 						radio = itemDrawY / (float) mCenterItemDrawnY;
 					}
+					radio = radio < 0 ? 0 :radio;
 					mPaint.setAlpha((int) (radio * 255));
-                // TODO: 17-12-25 最下方的选项字体颜色有问题。
-                // TODO: 17-12-25 缓慢切换时会卡顿。
             } else {
 				mPaint.setAlpha(255);
 			}
@@ -440,6 +439,7 @@ public class WheelPicker<T> extends View {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				if (Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
+					// TODO: 2017/12/25 反复在该位置滑动可能会造成看起来卡顿的现象
 					break;
 				}
 				float move = event.getY() - mLastDownY;
@@ -448,11 +448,12 @@ public class WheelPicker<T> extends View {
 				invalidate();
 				break;
 			case MotionEvent.ACTION_UP:
-			    if (mTouchDownY == mLastDownY) {
+				// TODO: 2017/12/25 点击在其他Item位置，滚动到当前位置。
+				if (mTouchDownY == mLastDownY) {
 			        performClick();
-                    mTracker.recycle();
-                    mTracker = null;
-			        break;
+//                    mTracker.recycle();
+//                    mTracker = null;
+//			        break;
                 }
 				mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 				int velocity = (int) mTracker.getYVelocity();
