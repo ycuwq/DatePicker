@@ -1,5 +1,6 @@
 package com.ycuwq.datepicker.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 		wheelPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wheelPicker.setCurtainColor(Color.parseColor("#30ffffff"));
                 Log.d(TAG, "onClick: ");
             }
         });

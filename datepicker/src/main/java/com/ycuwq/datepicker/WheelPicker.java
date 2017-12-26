@@ -92,12 +92,12 @@ public class WheelPicker<T> extends View {
     private boolean mIsZoomInCenterItem;
 
 	/**
-	 * 是否显示幕布，中央Item的额外颜色
+	 * 是否显示幕布，中央Item会遮盖一个颜色颜色
 	 */
 	private boolean mIsShowCurtain;
 
 	/**
-	 * 幕布边框
+	 * 幕布颜色
 	 */
     @ColorInt
     private int mCurtainColor;
@@ -107,6 +107,9 @@ public class WheelPicker<T> extends View {
 	 */
 	private boolean mIsShowCurtainBorder;
 
+    /**
+     * 幕布边框的颜色
+     */
 	@ColorInt
 	private int mCurtainBorderColor;
 
@@ -133,6 +136,11 @@ public class WheelPicker<T> extends View {
 	private Scroller mScroller;
 
 	private int mTouchSlop;
+
+    /**
+     * 该标记的作用是，令mTouchSlop仅在一个滑动过程中生效一次。
+     */
+	private boolean mTouchSlopFlag;
 
 	private VelocityTracker mTracker;
 
@@ -430,42 +438,52 @@ public class WheelPicker<T> extends View {
 		}
 		mTracker.addMovement(event);
 		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				if (!mScroller.isFinished()) {
-					mScroller.abortAnimation();
-				}
-				mTracker.clear();
-				mTouchDownY = mLastDownY = (int) event.getY();
-				break;
-			case MotionEvent.ACTION_MOVE:
-				if (Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
-					// TODO: 2017/12/25 反复在该位置滑动可能会造成看起来卡顿的现象
-					break;
-				}
-				float move = event.getY() - mLastDownY;
-				mScrollOffsetY += move;
-				mLastDownY = (int) event.getY();
-				invalidate();
-				break;
-			case MotionEvent.ACTION_UP:
-				// TODO: 2017/12/25 点击在其他Item位置，滚动到当前位置。
-				if (mTouchDownY == mLastDownY) {
-			        performClick();
-//                    mTracker.recycle();
-//                    mTracker = null;
-//			        break;
+            case MotionEvent.ACTION_DOWN:
+                if (!mScroller.isFinished()) {
+                    mScroller.abortAnimation();
                 }
-				mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-				int velocity = (int) mTracker.getYVelocity();
-                if (Math.abs(velocity) > mMinimumVelocity) {
-					mScroller.fling(0, mScrollOffsetY, 0, velocity,
-							0, 0, mMinFlingY, mMaxFlingY);
-					mScroller.setFinalY(mScroller.getFinalY() +
-							computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
-				} else {
-					mScroller.startScroll(0, mScrollOffsetY, 0,
-							computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
-				}
+                mTracker.clear();
+                mTouchDownY = mLastDownY = (int) event.getY();
+                mTouchSlopFlag = true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mTouchSlopFlag && Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
+                    break;
+                }
+                mTouchSlopFlag = false;
+                float move = event.getY() - mLastDownY;
+                mScrollOffsetY += move;
+                mLastDownY = (int) event.getY();
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mTouchDownY == mLastDownY) {
+                    performClick();
+                    if (event.getY() > mSelectedItemRect.bottom) {
+                        int scrollItem = (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
+                        mScroller.startScroll(0, mScrollOffsetY, 0,
+                                -scrollItem * mItemHeight);
+
+                    } else if (event.getY() < mSelectedItemRect.top) {
+                        int scrollItem = (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
+                        mScroller.startScroll(0, mScrollOffsetY, 0,
+                                scrollItem * mItemHeight);
+
+                    }
+
+                } else {
+                    mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+                    int velocity = (int) mTracker.getYVelocity();
+                    if (Math.abs(velocity) > mMinimumVelocity) {
+                        mScroller.fling(0, mScrollOffsetY, 0, velocity,
+                                0, 0, mMinFlingY, mMaxFlingY);
+                        mScroller.setFinalY(mScroller.getFinalY() +
+                                computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+                    } else {
+                        mScroller.startScroll(0, mScrollOffsetY, 0,
+                                computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
+                    }
+                }
 				if (!mIsCyclic) {
 					if (mScroller.getFinalY() > mMaxFlingY) {
 						mScroller.setFinalY(mMaxFlingY);
@@ -701,6 +719,71 @@ public class WheelPicker<T> extends View {
      */
     public void setMaximumVelocity(int maximumVelocity) {
         mMaximumVelocity = maximumVelocity;
+    }
+
+    public boolean isTextGradual() {
+        return mIsTextGradual;
+    }
+
+    /**
+     * 设置文字渐变，离中心越远越淡。
+     * @param textGradual 是否渐变
+     */
+    public void setTextGradual(boolean textGradual) {
+        mIsTextGradual = textGradual;
+        postInvalidate();
+    }
+
+    public boolean isShowCurtain() {
+        return mIsShowCurtain;
+    }
+
+    /**
+     * 设置中心Item是否有幕布遮盖
+     * @param showCurtain 是否有幕布
+     */
+    public void setShowCurtain(boolean showCurtain) {
+        mIsShowCurtain = showCurtain;
+        postInvalidate();
+    }
+
+    public int getCurtainColor() {
+        return mCurtainColor;
+    }
+
+    /**
+     * 设置幕布颜色
+     * @param curtainColor 幕布颜色
+     */
+    public void setCurtainColor(@ColorInt int curtainColor) {
+        mCurtainColor = curtainColor;
+        postInvalidate();
+    }
+
+    public boolean isShowCurtainBorder() {
+        return mIsShowCurtainBorder;
+    }
+
+    /**
+     * 设置幕布是否显示边框
+     * @param showCurtainBorder 是否有幕布边框
+     */
+    public void setShowCurtainBorder(boolean showCurtainBorder) {
+        mIsShowCurtainBorder = showCurtainBorder;
+        postInvalidate();
+    }
+
+    public int getCurtainBorderColor() {
+        return mCurtainBorderColor;
+    }
+
+    /**
+     * 幕布边框的颜色
+     * @param curtainBorderColor 幕布边框颜色
+     */
+    public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+        mCurtainBorderColor = curtainBorderColor;
+        postInvalidate();
     }
 
     public interface OnWheelChangeListener {
