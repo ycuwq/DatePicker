@@ -14,5 +14,7 @@
         app:halfVisibleItemCount="3"
         android:layout_width="150dp"
         android:layout_height="wrap_content"/>
-
+    <com.ycuwq.datepicker.date.YearPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

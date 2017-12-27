@@ -9,6 +9,7 @@
         <attr name="selectedTextColor" format="color"/>
         <attr name="selectedTextSize" format="dimension"/>
         <attr name="currentItemPosition" format="integer"/>
+        <attr name="itemWidthSpace" format="dimension"/>
         <attr name="itemHeightSpace" format="dimension"/>
         <attr name="zoomInCenterItem" format="boolean"/>
         <attr name="wheelCyclic" format="boolean"/>
@@ -16,5 +17,10 @@
         <attr name="wheelCurtainColor" format="color"/>
         <attr name="wheelCurtainBorder" format="boolean"/>
         <attr name="wheelCurtainBorderColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="YearPicker">
+        <attr name="startYear" format="integer"/>
+        <attr name="endYear" format="integer"/>
     </declare-styleable>
 </resources>

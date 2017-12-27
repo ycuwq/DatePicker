@@ -77,7 +77,7 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 两个Item之间的高度间隔
 	 */
-	private int mItemHeightSpace;
+	private int mItemHeightSpace, mItemWidthSpace;
 
 	private int mItemHeight;
 
@@ -170,9 +170,15 @@ public class WheelPicker<T> extends View {
 	 */
 	private int mMinimumVelocity = 50, mMaximumVelocity = 12000;
 
-	private Handler mHandler = new Handler();
+    /**
+     * 是否是手动停止滚动
+     */
+	private boolean mIsAbortScroller;
 
-	private OnWheelChangeListener mOnWheelChangeListener;
+
+    private Handler mHandler = new Handler();
+
+	private OnWheelChangeListener<T> mOnWheelChangeListener;
 
 	private Runnable mScrollerRunnable = new Runnable() {
 		@Override
@@ -213,7 +219,8 @@ public class WheelPicker<T> extends View {
 					}
 				}
 				if (mCurrentPosition != position) {
-					mOnWheelChangeListener.onWheelSelected(position);
+					mOnWheelChangeListener.onWheelSelected(mDataList.get(position),
+                            position);
 				}
 				mCurrentPosition = position;
 			}
@@ -254,6 +261,8 @@ public class WheelPicker<T> extends View {
         mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
                 getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
         mCurrentPosition = a.getInteger(R.styleable.WheelPicker_currentItemPosition, 0);
+        mItemWidthSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemWidthSpace,
+                getResources().getDimensionPixelOffset(R.dimen.WheelItemWidthSpace));
         mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
                 getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
         mIsZoomInCenterItem = a.getBoolean(R.styleable.WheelPicker_zoomInCenterItem, true);
@@ -313,7 +322,7 @@ public class WheelPicker<T> extends View {
 		int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
 		int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-		int width = mTextMaxWidth;
+		int width = mTextMaxWidth + mItemWidthSpace;
 		int height = (mTextMaxHeight + mItemHeightSpace) * getVisibleItemCount();
 
 		width += getPaddingLeft() + getPaddingRight();
@@ -441,6 +450,9 @@ public class WheelPicker<T> extends View {
             case MotionEvent.ACTION_DOWN:
                 if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
+                    mIsAbortScroller = true;
+                } else {
+                    mIsAbortScroller = false;
                 }
                 mTracker.clear();
                 mTouchDownY = mLastDownY = (int) event.getY();
@@ -457,7 +469,7 @@ public class WheelPicker<T> extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                if (mTouchDownY == mLastDownY) {
+                if (!mIsAbortScroller && mTouchDownY == mLastDownY) {
                     performClick();
                     if (event.getY() > mSelectedItemRect.bottom) {
                         int scrollItem = (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
@@ -515,7 +527,7 @@ public class WheelPicker<T> extends View {
 	}
 
 
-    public void setOnWheelChangeListener(OnWheelChangeListener onWheelChangeListener) {
+    public void setOnWheelChangeListener(OnWheelChangeListener<T> onWheelChangeListener) {
         mOnWheelChangeListener = onWheelChangeListener;
     }
 
@@ -622,6 +634,15 @@ public class WheelPicker<T> extends View {
         requestLayout();
     }
 
+    public int getItemWidthSpace() {
+        return mItemWidthSpace;
+    }
+
+    public void setItemWidthSpace(int itemWidthSpace) {
+        mItemWidthSpace = itemWidthSpace;
+        requestLayout();
+    }
+
     public int getItemHeightSpace() {
         return mItemHeightSpace;
     }
@@ -669,7 +690,7 @@ public class WheelPicker<T> extends View {
             mScrollOffsetY = -mItemHeight * mCurrentPosition;
             postInvalidate();
             if (mOnWheelChangeListener != null) {
-                mOnWheelChangeListener.onWheelSelected(currentPosition);
+                mOnWheelChangeListener.onWheelSelected(mDataList.get(currentPosition), currentPosition);
             }
         }
     }
@@ -786,7 +807,7 @@ public class WheelPicker<T> extends View {
         postInvalidate();
     }
 
-    public interface OnWheelChangeListener {
-		void onWheelSelected(int position);
+    public interface OnWheelChangeListener<T> {
+		void onWheelSelected(T item, int position);
 	}
 }

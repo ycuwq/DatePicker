@@ -23,12 +23,12 @@ public class MainActivity extends AppCompatActivity {
 			list.add("第" + i);
 		}
 		wheelPicker.setDataList(list);
-		wheelPicker.setOnWheelChangeListener(new WheelPicker.OnWheelChangeListener() {
-			@Override
-			public void onWheelSelected(int position) {
-				Log.d(TAG, "onWheelSelected: " + position);
-			}
-		});
+		wheelPicker.setOnWheelChangeListener(new WheelPicker.OnWheelChangeListener<String>() {
+            @Override
+            public void onWheelSelected(String item, int position) {
+                Log.d(TAG, "onWheelSelected: " + item);
+            }
+        });
 		wheelPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
