@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.ycuwq.datepicker.WheelPicker;
+import com.ycuwq.datepicker.date.DayPicker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 wheelPicker.setCurtainColor(Color.parseColor("#30ffffff"));
                 Log.d(TAG, "onClick: ");
+            }
+        });
+		DayPicker dayPicker = findViewById(R.id.dayPicker);
+		dayPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dayPicker.setMonth(2017, 2);
             }
         });
 	}

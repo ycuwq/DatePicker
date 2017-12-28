@@ -21,6 +21,8 @@ public class YearPicker extends WheelPicker<Integer> {
 
     private int mStartYear, mEndYear;
     private int mSelectedYear;
+    private OnYearSelectedListener mOnYearSelectedListener;
+
     public YearPicker(Context context) {
         this(context, null);
     }
@@ -31,15 +33,30 @@ public class YearPicker extends WheelPicker<Integer> {
 
     public YearPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAttrs(context, attrs);
+        setItemMaximumWidthText("0000");
+        updateYear();
+        setSelectedYear(mSelectedYear, false);
+        setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
+            @Override
+            public void onWheelSelected(Integer item, int position) {
+                if (mOnYearSelectedListener != null) {
+                    mOnYearSelectedListener.onYearSelected(item);
+                }
+            }
+        });
+    }
 
+    private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+        if (attrs == null) {
+            return;
+        }
         mSelectedYear = Calendar.getInstance().get(Calendar.YEAR);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.YearPicker);
         mStartYear = a.getInteger(R.styleable.YearPicker_startYear, 1900);
         mEndYear = a.getInteger(R.styleable.YearPicker_endYear, 2100);
         a.recycle();
-        setItemMaximumWidthText("0000");
-        updateYear();
-        setSelectedYear(mSelectedYear, false);
+
     }
 
     private void updateYear() {
@@ -69,8 +86,12 @@ public class YearPicker extends WheelPicker<Integer> {
         setCurrentPosition(mSelectedYear - mStartYear, smoothScroll);
     }
 
+    public void setOnYearSelectedListener(OnYearSelectedListener onYearSelectedListener) {
+        mOnYearSelectedListener = onYearSelectedListener;
+    }
+
     public interface OnYearSelectedListener {
-        void onYearSelected();
+        void onYearSelected(int year);
     }
 
 }

@@ -17,4 +17,11 @@
     <com.ycuwq.datepicker.date.YearPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <com.ycuwq.datepicker.date.MonthPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <com.ycuwq.datepicker.date.DayPicker
+        android:id="@+id/dayPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

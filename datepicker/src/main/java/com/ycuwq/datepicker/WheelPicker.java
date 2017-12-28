@@ -248,6 +248,9 @@ public class WheelPicker<T> extends View {
 	}
 
 	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+	    if (attrs == null) {
+	        return;
+        }
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
 		mTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_itemTextSize,
 				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));

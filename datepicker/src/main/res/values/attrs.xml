@@ -23,4 +23,7 @@
         <attr name="startYear" format="integer"/>
         <attr name="endYear" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="MonthPicker">
+    </declare-styleable>
 </resources>
