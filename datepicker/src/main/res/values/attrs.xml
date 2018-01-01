@@ -26,4 +26,8 @@
 
     <declare-styleable name="MonthPicker">
     </declare-styleable>
+
+    <declare-styleable name="DatePicker">
+
+    </declare-styleable>
 </resources>
