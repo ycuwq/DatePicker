@@ -23,6 +23,8 @@ public class DayPicker extends WheelPicker<Integer>{
 
     private int mYear, mMonth;
 
+    private OnDaySelectedListener mOnDaySelectedListener;
+
     public DayPicker(Context context) {
         this(context, null);
     }
@@ -37,6 +39,14 @@ public class DayPicker extends WheelPicker<Integer>{
         updateDay();
         mSelectedDay = Calendar.getInstance().get(Calendar.DATE);
         setSelectedDay(mSelectedDay, false);
+        setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
+	        @Override
+	        public void onWheelSelected(Integer item, int position) {
+		        if (mOnDaySelectedListener != null) {
+		        	mOnDaySelectedListener.onDaySelected(item);
+		        }
+	        }
+        });
     }
 
 
@@ -63,11 +73,19 @@ public class DayPicker extends WheelPicker<Integer>{
         setCurrentPosition(selectedDay - 1, smoothScroll);
     }
 
-    private void updateDay() {
+	public void setOnDaySelectedListener(OnDaySelectedListener onDaySelectedListener) {
+		mOnDaySelectedListener = onDaySelectedListener;
+	}
+
+	private void updateDay() {
         List<Integer> list = new ArrayList<>();
         for (int i = 1; i <= mEndDay; i++) {
             list.add(i);
         }
         setDataList(list);
+    }
+
+    public interface OnDaySelectedListener {
+    	void onDaySelected(int day);
     }
 }

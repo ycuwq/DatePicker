@@ -7,21 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.ycuwq.datepicker.sample.MainActivity">
 
-    <com.ycuwq.datepicker.WheelPicker
-        android:id="@+id/wheel_picker"
-        app:itemMaximumWidthText="第000"
-        app:wheelCyclic="true"
-        app:halfVisibleItemCount="3"
-        android:layout_width="150dp"
+    <com.ycuwq.datepicker.date.DatePicker
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <com.ycuwq.datepicker.date.YearPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <com.ycuwq.datepicker.date.MonthPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <com.ycuwq.datepicker.date.DayPicker
-        android:id="@+id/dayPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>

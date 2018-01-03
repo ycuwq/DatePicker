@@ -18,6 +18,8 @@ public class MonthPicker extends WheelPicker<Integer> {
 
     private int mSelectedMonth;
 
+    private OnMonthSelectedListener mOnMonthSelectedListener;
+
     public MonthPicker(Context context) {
         this(context, null);
     }
@@ -32,6 +34,14 @@ public class MonthPicker extends WheelPicker<Integer> {
         mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH);
         updateMonth();
         setSelectedMonth(mSelectedMonth + 1, false);
+        setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
+	        @Override
+	        public void onWheelSelected(Integer item, int position) {
+		        if (mOnMonthSelectedListener != null) {
+		        	mOnMonthSelectedListener.onMonthSelected(item);
+		        }
+	        }
+        });
     }
 
     public void updateMonth() {
@@ -57,4 +67,13 @@ public class MonthPicker extends WheelPicker<Integer> {
         }
         setCurrentPosition(selectedMonth - 1, smoothScroll);
     }
+
+	public void setOnMonthSelectedListener(OnMonthSelectedListener onMonthSelectedListener) {
+		mOnMonthSelectedListener = onMonthSelectedListener;
+	}
+
+	public interface OnMonthSelectedListener {
+    	void onMonthSelected(int month);
+    }
+
 }

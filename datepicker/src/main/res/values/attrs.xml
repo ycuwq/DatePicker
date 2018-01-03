@@ -28,6 +28,6 @@
     </declare-styleable>
 
     <declare-styleable name="DatePicker">
-
+        <attr name="visibleItemCount" format="integer"/>
     </declare-styleable>
 </resources>

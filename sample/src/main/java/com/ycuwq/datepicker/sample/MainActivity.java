@@ -18,31 +18,6 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		final WheelPicker<String> wheelPicker = findViewById(R.id.wheel_picker);
-		List<String> list = new ArrayList<>();
-		for (int i = 0; i < 200; i ++) {
-			list.add("第" + i);
-		}
-		wheelPicker.setDataList(list);
-		wheelPicker.setOnWheelChangeListener(new WheelPicker.OnWheelChangeListener<String>() {
-            @Override
-            public void onWheelSelected(String item, int position) {
-                Log.d(TAG, "onWheelSelected: " + item);
-            }
-        });
-		wheelPicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wheelPicker.setCurtainColor(Color.parseColor("#30ffffff"));
-                Log.d(TAG, "onClick: ");
-            }
-        });
-		DayPicker dayPicker = findViewById(R.id.dayPicker);
-		dayPicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dayPicker.setMonth(2017, 2);
-            }
-        });
+
 	}
 }
