@@ -30,13 +30,14 @@ public class MonthPicker extends WheelPicker<Integer> {
 
     public MonthPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH);
+		Calendar.getInstance().clear();
+        mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
         updateMonth();
-        setSelectedMonth(mSelectedMonth + 1, false);
+        setSelectedMonth(mSelectedMonth, false);
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
 	        @Override
 	        public void onWheelSelected(Integer item, int position) {
+	        	mSelectedMonth = item;
 		        if (mOnMonthSelectedListener != null) {
 		        	mOnMonthSelectedListener.onMonthSelected(item);
 		        }

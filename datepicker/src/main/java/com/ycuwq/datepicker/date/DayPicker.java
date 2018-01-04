@@ -3,7 +3,6 @@ package com.ycuwq.datepicker.date;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.ycuwq.datepicker.WheelPicker;
 
@@ -42,6 +41,7 @@ public class DayPicker extends WheelPicker<Integer>{
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
 	        @Override
 	        public void onWheelSelected(Integer item, int position) {
+	        	mSelectedDay = item;
 		        if (mOnDaySelectedListener != null) {
 		        	mOnDaySelectedListener.onDaySelected(item);
 		        }
@@ -54,6 +54,9 @@ public class DayPicker extends WheelPicker<Integer>{
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, 1);
         mEndDay = calendar.getActualMaximum(Calendar.DATE);
+        if (mSelectedDay > mEndDay) {
+        	setSelectedDay(mEndDay, true);
+        }
         updateDay();
     }
 

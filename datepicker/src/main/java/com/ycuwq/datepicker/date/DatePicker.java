@@ -2,12 +2,18 @@ package com.ycuwq.datepicker.date;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.ycuwq.datepicker.R;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * 日期选择器
@@ -58,7 +64,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	@Override
 	public void onMonthSelected(int month) {
-
+		mDayPicker.setMonth(getYear(), month);
 	}
 
 	@Override
@@ -68,6 +74,183 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	@Override
 	public void onYearSelected(int year) {
+		int month = getMonth();
+		mDayPicker.setMonth(year, month);
+	}
 
+	public String getDate() {
+		DateFormat format = SimpleDateFormat.getDateInstance();
+		return getDate(format);
+	}
+
+	public String getDate(@NonNull DateFormat dateFormat) {
+		int year, month, day;
+		year = getYear();
+		month = getMonth();
+		day = getDay();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month - 1, day);
+
+		return dateFormat.format(calendar.getTime());
+	}
+
+	public int getYear() {
+		return mYearPicker.getSelectedYear();
+	}
+
+	public int getMonth() {
+		return mMonthPicker.getSelectedMonth();
+	}
+
+	public int getDay() {
+		return mDayPicker.getSelectedDay();
+	}
+
+	public YearPicker getYearPicker() {
+		return mYearPicker;
+	}
+
+	public MonthPicker getMonthPicker() {
+		return mMonthPicker;
+	}
+
+	public DayPicker getDayPicker() {
+		return mDayPicker;
+	}
+
+	/**
+	 * 一般列表的文本颜色
+	 * @param textColor 文本颜色
+	 */
+	public void setTextColor(@ColorInt int textColor) {
+		mDayPicker.setTextColor(textColor);
+		mMonthPicker.setTextColor(textColor);
+		mYearPicker.setTextColor(textColor);
+	}
+
+	/**
+	 * 一般列表的文本大小
+	 * @param textSize 文字大小
+	 */
+	public void setTextSize(int textSize) {
+		mDayPicker.setTextSize(textSize);
+		mMonthPicker.setTextSize(textSize);
+		mYearPicker.setTextSize(textSize);
+	}
+
+	/**
+	 * 设置被选中时候的文本颜色
+	 * @param selectedItemTextColor 文本颜色
+	 */
+	public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+		mDayPicker.setSelectedItemTextColor(selectedItemTextColor);
+		mMonthPicker.setSelectedItemTextColor(selectedItemTextColor);
+		mYearPicker.setSelectedItemTextColor(selectedItemTextColor);
+	}
+
+	/**
+	 * 设置被选中时候的文本大小
+	 * @param selectedItemTextSize 文字大小
+	 */
+	public void setSelectedItemTextSize(int selectedItemTextSize) {
+		mDayPicker.setSelectedItemTextSize(selectedItemTextSize);
+		mMonthPicker.setSelectedItemTextSize(selectedItemTextSize);
+		mYearPicker.setSelectedItemTextSize(selectedItemTextSize);
+	}
+
+
+	/**
+	 * 设置显示数据量的个数的一半。
+	 * 为保证总显示个数为奇数,这里将总数拆分，总数为 mHalfVisibleItemCount * 2 + 1
+	 * @param halfVisibleItemCount 总数量的一半
+	 */
+	public void setHalfVisibleItemCount(int halfVisibleItemCount) {
+		mDayPicker.setHalfVisibleItemCount(halfVisibleItemCount);
+		mMonthPicker.setHalfVisibleItemCount(halfVisibleItemCount);
+		mYearPicker.setHalfVisibleItemCount(halfVisibleItemCount);
+	}
+
+	public void setItemWidthSpace(int itemWidthSpace) {
+		mDayPicker.setItemWidthSpace(itemWidthSpace);
+		mMonthPicker.setItemWidthSpace(itemWidthSpace);
+		mYearPicker.setItemWidthSpace(itemWidthSpace);
+	}
+
+	/**
+	 * 设置两个Item之间的间隔
+	 * @param itemHeightSpace 间隔值
+	 */
+	public void setItemHeightSpace(int itemHeightSpace) {
+		mDayPicker.setItemHeightSpace(itemHeightSpace);
+		mMonthPicker.setItemHeightSpace(itemHeightSpace);
+		mYearPicker.setItemHeightSpace(itemHeightSpace);
+	}
+
+
+	public void setZoomInCenterItem(boolean zoomInCenterItem) {
+		mDayPicker.setZoomInCenterItem(zoomInCenterItem);
+		mMonthPicker.setZoomInCenterItem(zoomInCenterItem);
+		mYearPicker.setZoomInCenterItem(zoomInCenterItem);
+	}
+
+	/**
+	 * 设置是否循环滚动。
+	 * @param cyclic 上下边界是否相邻
+	 */
+	public void setCyclic(boolean cyclic) {
+		mDayPicker.setCyclic(cyclic);
+		mMonthPicker.setCyclic(cyclic);
+		mYearPicker.setCyclic(cyclic);
+	}
+
+	/**
+	 * 设置文字渐变，离中心越远越淡。
+	 * @param textGradual 是否渐变
+	 */
+	public void setTextGradual(boolean textGradual) {
+		mDayPicker.setTextGradual(textGradual);
+		mMonthPicker.setTextGradual(textGradual);
+		mYearPicker.setTextGradual(textGradual);
+	}
+
+
+	/**
+	 * 设置中心Item是否有幕布遮盖
+	 * @param showCurtain 是否有幕布
+	 */
+	public void setShowCurtain(boolean showCurtain) {
+		mDayPicker.setShowCurtain(showCurtain);
+		mMonthPicker.setShowCurtain(showCurtain);
+		mYearPicker.setShowCurtain(showCurtain);
+	}
+
+	/**
+	 * 设置幕布颜色
+	 * @param curtainColor 幕布颜色
+	 */
+	public void setCurtainColor(@ColorInt int curtainColor) {
+		mDayPicker.setCurtainColor(curtainColor);
+		mMonthPicker.setCurtainColor(curtainColor);
+		mYearPicker.setCurtainColor(curtainColor);
+	}
+
+	/**
+	 * 设置幕布是否显示边框
+	 * @param showCurtainBorder 是否有幕布边框
+	 */
+	public void setShowCurtainBorder(boolean showCurtainBorder) {
+		mDayPicker.setShowCurtainBorder(showCurtainBorder);
+		mMonthPicker.setShowCurtainBorder(showCurtainBorder);
+		mYearPicker.setShowCurtainBorder(showCurtainBorder);
+	}
+
+	/**
+	 * 幕布边框的颜色
+	 * @param curtainBorderColor 幕布边框颜色
+	 */
+	public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+		mDayPicker.setCurtainBorderColor(curtainBorderColor);
+		mMonthPicker.setCurtainBorderColor(curtainBorderColor);
+		mYearPicker.setCurtainBorderColor(curtainBorderColor);
 	}
 }
