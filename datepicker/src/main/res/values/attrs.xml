@@ -28,6 +28,19 @@
     </declare-styleable>
 
     <declare-styleable name="DatePicker">
-        <attr name="visibleItemCount" format="integer"/>
+        <attr name="dateHalfVisibleItemCount" format="integer"/>
+        <attr name="dateTextSize" format="dimension"/>
+        <attr name="dateTextColor" format="color"/>
+        <attr name="dateTextGradual" format="boolean"/>
+        <attr name="dateSelectedTextColor" format="color"/>
+        <attr name="dateSelectedTextSize" format="dimension"/>
+        <attr name="dateItemWidthSpace" format="dimension"/>
+        <attr name="dateItemHeightSpace" format="dimension"/>
+        <attr name="dateZoomInCenterItem" format="boolean"/>
+        <attr name="cyclic" format="boolean"/>
+        <attr name="curtain" format="boolean"/>
+        <attr name="curtainColor" format="color"/>
+        <attr name="curtainBorder" format="boolean"/>
+        <attr name="curtainBorderColor" format="color"/>
     </declare-styleable>
 </resources>

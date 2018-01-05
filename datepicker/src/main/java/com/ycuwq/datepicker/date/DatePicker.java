@@ -2,6 +2,7 @@ package com.ycuwq.datepicker.date;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +29,6 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	private DayPicker mDayPicker;
 	private Context mContext;
 
-
 	public DatePicker(Context context) {
 		this(context, null);
 	}
@@ -42,8 +42,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 		LayoutInflater.from(context).inflate(R.layout.layout_date, this);
 		mContext = context;
-		initAttrs(context, attrs);
 		initChild();
+		initAttrs(context, attrs);
 	}
 
 	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
@@ -51,7 +51,42 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 			return;
 		}
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DatePicker);
+		int textSize = a.getDimensionPixelSize(R.styleable.DatePicker_dateTextSize,
+				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
+		int textColor = a.getColor(R.styleable.DatePicker_dateTextColor,
+				Color.BLACK);
+		boolean isTextGradual = a.getBoolean(R.styleable.DatePicker_dateTextGradual, true);
+		boolean isCyclic = a.getBoolean(R.styleable.DatePicker_cyclic, false);
+		int halfVisibleItemCount = a.getInteger(R.styleable.DatePicker_dateHalfVisibleItemCount, 2);
+		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_dateSelectedTextColor, Color.RED);
+		int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.DatePicker_dateSelectedTextSize,
+				getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
+		int itemWidthSpace = a.getDimensionPixelSize(R.styleable.DatePicker_dateItemWidthSpace,
+				getResources().getDimensionPixelOffset(R.dimen.WheelItemWidthSpace));
+		int itemHeightSpace = a.getDimensionPixelSize(R.styleable.DatePicker_dateItemHeightSpace,
+				getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
+		boolean isZoomInCenterItem = a.getBoolean(R.styleable.DatePicker_dateZoomInCenterItem, true);
+		boolean isShowCurtain = a.getBoolean(R.styleable.DatePicker_curtain, true);
+		int curtainColor = a.getColor(R.styleable.DatePicker_curtainColor,
+				Color.parseColor("#303d3d3d"));
+		boolean isShowCurtainBorder = a.getBoolean(R.styleable.DatePicker_curtainBorder, true);
+		int curtainBorderColor = a.getColor(R.styleable.DatePicker_curtainBorderColor, Color.BLACK);
 		a.recycle();
+
+		setTextSize(textSize);
+		setTextColor(textColor);
+		setTextGradual(isTextGradual);
+		setCyclic(isCyclic);
+		setHalfVisibleItemCount(halfVisibleItemCount);
+		setSelectedItemTextColor(selectedItemTextColor);
+		setSelectedItemTextSize(selectedItemTextSize);
+		setItemWidthSpace(itemWidthSpace);
+		setItemHeightSpace(itemHeightSpace);
+		setZoomInCenterItem(isZoomInCenterItem);
+		setShowCurtain(isShowCurtain);
+		setCurtainColor(curtainColor);
+		setShowCurtainBorder(isShowCurtainBorder);
+		setCurtainBorderColor(curtainBorderColor);
 	}
 	private void initChild() {
 		mYearPicker = findViewById(R.id.yearPicker);

@@ -558,6 +558,9 @@ public class WheelPicker<T> extends View {
      * @param textColor 文本颜色
      */
     public void setTextColor(@ColorInt int textColor) {
+    	if (mTextColor == textColor) {
+    		return;
+	    }
         mTextColor = textColor;
         postInvalidate();
     }
@@ -571,6 +574,9 @@ public class WheelPicker<T> extends View {
      * @param textSize 文字大小
      */
     public void setTextSize(int textSize) {
+    	if (mTextSize == textSize) {
+    		return;
+	    }
         mTextSize = textSize;
         postInvalidate();
     }
@@ -584,6 +590,9 @@ public class WheelPicker<T> extends View {
      * @param selectedItemTextColor 文本颜色
      */
     public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+    	if (mSelectedItemTextColor == selectedItemTextColor) {
+    		return;
+	    }
         mSelectedItemTextColor = selectedItemTextColor;
         postInvalidate();
     }
@@ -597,6 +606,9 @@ public class WheelPicker<T> extends View {
      * @param selectedItemTextSize 文字大小
      */
     public void setSelectedItemTextSize(int selectedItemTextSize) {
+    	if (mSelectedItemTextSize == selectedItemTextSize) {
+    		return;
+	    }
         mSelectedItemTextSize = selectedItemTextSize;
         postInvalidate();
     }
@@ -633,6 +645,9 @@ public class WheelPicker<T> extends View {
      * @param halfVisibleItemCount 总数量的一半
      */
     public void setHalfVisibleItemCount(int halfVisibleItemCount) {
+    	if (mHalfVisibleItemCount == halfVisibleItemCount) {
+    		return;
+	    }
         mHalfVisibleItemCount = halfVisibleItemCount;
         requestLayout();
     }
@@ -642,6 +657,9 @@ public class WheelPicker<T> extends View {
     }
 
     public void setItemWidthSpace(int itemWidthSpace) {
+    	if (mItemWidthSpace == itemWidthSpace) {
+    		return;
+	    }
         mItemWidthSpace = itemWidthSpace;
         requestLayout();
     }
@@ -655,6 +673,9 @@ public class WheelPicker<T> extends View {
      * @param itemHeightSpace 间隔值
      */
     public void setItemHeightSpace(int itemHeightSpace) {
+    	if (mItemHeightSpace == itemHeightSpace) {
+    		return;
+	    }
         mItemHeightSpace = itemHeightSpace;
         requestLayout();
     }
@@ -703,6 +724,9 @@ public class WheelPicker<T> extends View {
     }
 
     public void setZoomInCenterItem(boolean zoomInCenterItem) {
+	    if (mIsZoomInCenterItem == zoomInCenterItem) {
+		    return;
+	    }
         mIsZoomInCenterItem = zoomInCenterItem;
         postInvalidate();
     }
@@ -716,6 +740,9 @@ public class WheelPicker<T> extends View {
      * @param cyclic 上下边界是否相邻
      */
     public void setCyclic(boolean cyclic) {
+	    if (mIsCyclic == cyclic) {
+		    return;
+	    }
         mIsCyclic = cyclic;
         computeFlingLimitY();
         requestLayout();
@@ -754,6 +781,9 @@ public class WheelPicker<T> extends View {
      * @param textGradual 是否渐变
      */
     public void setTextGradual(boolean textGradual) {
+	    if (mIsTextGradual == textGradual) {
+		    return;
+	    }
         mIsTextGradual = textGradual;
         postInvalidate();
     }
@@ -767,6 +797,9 @@ public class WheelPicker<T> extends View {
      * @param showCurtain 是否有幕布
      */
     public void setShowCurtain(boolean showCurtain) {
+	    if (mIsShowCurtain == showCurtain) {
+		    return;
+	    }
         mIsShowCurtain = showCurtain;
         postInvalidate();
     }
@@ -780,6 +813,9 @@ public class WheelPicker<T> extends View {
      * @param curtainColor 幕布颜色
      */
     public void setCurtainColor(@ColorInt int curtainColor) {
+	    if (mCurtainColor == curtainColor) {
+		    return;
+	    }
         mCurtainColor = curtainColor;
         postInvalidate();
     }
@@ -793,6 +829,9 @@ public class WheelPicker<T> extends View {
      * @param showCurtainBorder 是否有幕布边框
      */
     public void setShowCurtainBorder(boolean showCurtainBorder) {
+	    if (mIsShowCurtainBorder == showCurtainBorder) {
+		    return;
+	    }
         mIsShowCurtainBorder = showCurtainBorder;
         postInvalidate();
     }
@@ -806,6 +845,9 @@ public class WheelPicker<T> extends View {
      * @param curtainBorderColor 幕布边框颜色
      */
     public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+	    if (mCurtainBorderColor == curtainBorderColor) {
+		    return;
+	    }
         mCurtainBorderColor = curtainBorderColor;
         postInvalidate();
     }
