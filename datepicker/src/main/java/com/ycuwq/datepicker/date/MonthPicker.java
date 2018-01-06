@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.ycuwq.datepicker.WheelPicker;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,6 +31,10 @@ public class MonthPicker extends WheelPicker<Integer> {
 
     public MonthPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+	    setItemMaximumWidthText("00");
+	    NumberFormat numberFormat = NumberFormat.getNumberInstance();
+	    numberFormat.setMinimumIntegerDigits(2);
+	    setDataFormat(numberFormat);
 		Calendar.getInstance().clear();
         mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
         updateMonth();

@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
+import com.ycuwq.datepicker.util.LinearGradient;
+
+import java.text.Format;
 import java.util.List;
 
 
@@ -33,6 +36,9 @@ public class WheelPicker<T> extends View {
 	 * 数据集合
 	 */
 	private List<T> mDataList;
+
+	private Format mDataFormat;
+
 	/**
 	 * Item的Text的颜色
 	 */
@@ -56,6 +62,23 @@ public class WheelPicker<T> extends View {
      * 选中的Item的Text大小
      */
 	private int mSelectedItemTextSize;
+
+	/**
+	 * 指示器文字
+	 * 会在中心文字后边多绘制一个文字。
+	 */
+	private String mIndicatorText;
+
+	/**
+	 * 指示器文字颜色
+	 */
+	@ColorInt
+	private int mIndicatorTextColor;
+
+	/**
+	 * 指示器文字大小
+	 */
+	private int mIndicatorTextSize;
 
 	private Paint mPaint;
 
@@ -175,6 +198,7 @@ public class WheelPicker<T> extends View {
      */
 	private boolean mIsAbortScroller;
 
+	private LinearGradient mLinearGradient;
 
     private Handler mHandler = new Handler();
 
@@ -239,6 +263,7 @@ public class WheelPicker<T> extends View {
 		super(context, attrs, defStyleAttr);
 		initAttrs(context, attrs);
 		initPaint();
+		mLinearGradient = new LinearGradient(mTextColor, mSelectedItemTextColor);
 		mDrawnRect = new Rect();
 		mSelectedItemRect = new Rect();
 		mScroller = new Scroller(context);
@@ -260,7 +285,7 @@ public class WheelPicker<T> extends View {
 		mIsCyclic = a.getBoolean(R.styleable.WheelPicker_wheelCyclic, false);
 		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 2);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
-		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.RED);
+		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.parseColor("#33aaff"));
         mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
                 getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
         mCurrentPosition = a.getInteger(R.styleable.WheelPicker_currentItemPosition, 0);
@@ -274,6 +299,9 @@ public class WheelPicker<T> extends View {
 		        Color.parseColor("#303d3d3d"));
         mIsShowCurtainBorder = a.getBoolean(R.styleable.WheelPicker_wheelCurtainBorder, true);
         mCurtainBorderColor = a.getColor(R.styleable.WheelPicker_wheelCurtainBorderColor, Color.BLACK);
+        mIndicatorText = a.getString(R.styleable.WheelPicker_indicatorText);
+        mIndicatorTextColor = a.getColor(R.styleable.WheelPicker_indicatorTextColor, mSelectedItemTextColor);
+        mIndicatorTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_indicatorTextSize, mTextSize);
 		a.recycle();
 	}
 
@@ -343,6 +371,7 @@ public class WheelPicker<T> extends View {
 				- mItemHeight * (mDataList.size() - 1);
 		mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : 0;
 	}
+
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -365,9 +394,20 @@ public class WheelPicker<T> extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		mPaint.setTextAlign(Paint.Align.CENTER);
+		if (mIsShowCurtain) {
+			mPaint.setStyle(Paint.Style.FILL);
+			mPaint.setColor(mCurtainColor);
+			canvas.drawRect(mSelectedItemRect, mPaint);
+		}
+		if (mIsShowCurtainBorder) {
+			mPaint.setStyle(Paint.Style.STROKE);
+			mPaint.setColor(mCurtainBorderColor);
+			canvas.drawRect(mSelectedItemRect, mPaint);
+			canvas.drawRect(mDrawnRect, mPaint);
+		}
 		int drawnSelectedPos = - mScrollOffsetY / mItemHeight;
 		mPaint.setStyle(Paint.Style.FILL);
-
 		//首尾各多绘制一个用于缓冲
 		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
@@ -402,18 +442,24 @@ public class WheelPicker<T> extends View {
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
 
 			if (mIsTextGradual) {
-					float radio;
-					if (itemDrawY > mCenterItemDrawnY) {
-						radio =  (mDrawnRect.height() - itemDrawY) /
-								(float) (mDrawnRect.height() - (mCenterItemDrawnY));
-
-					} else {
-						radio = itemDrawY / (float) mCenterItemDrawnY;
-					}
-					radio = radio < 0 ? 0 :radio;
-					mPaint.setAlpha((int) (radio * 255));
+				float alphaRadio;
+				if (itemDrawY > mCenterItemDrawnY) {
+					alphaRadio =  (mDrawnRect.height() - itemDrawY) /
+							(float) (mDrawnRect.height() - (mCenterItemDrawnY));
+				} else {
+					alphaRadio = itemDrawY / (float) mCenterItemDrawnY;
+				}
+				if (distanceY < mItemHeight) {
+					float colorRadio = 1 - (distanceY / (float) mItemHeight);
+					mPaint.setColor(mLinearGradient.getColor(colorRadio));
+				} else {
+					mPaint.setColor(mTextColor);
+				}
+				alphaRadio = alphaRadio < 0 ? 0 :alphaRadio;
+				mPaint.setAlpha((int) (alphaRadio * 255));
             } else {
 				mPaint.setAlpha(255);
+				mPaint.setColor(mSelectedItemTextColor);
 			}
 
 			//开启此选项,会将越靠近中心的Item字体放大
@@ -427,17 +473,17 @@ public class WheelPicker<T> extends View {
             } else {
                 mPaint.setTextSize(mTextSize);
             }
-            canvas.drawText(t.toString(), mFirstItemDrawX, itemDrawY, mPaint);
+            if (mDataFormat != null) {
+	            canvas.drawText(mDataFormat.format(t), mFirstItemDrawX, itemDrawY, mPaint);
+            } else {
+	            canvas.drawText(t.toString(), mFirstItemDrawX, itemDrawY, mPaint);
+            }
 		}
-		if (mIsShowCurtainBorder) {
-			mPaint.setStyle(Paint.Style.STROKE);
-			mPaint.setColor(mCurtainBorderColor);
-			canvas.drawRect(mSelectedItemRect, mPaint);
-		}
-		if (mIsShowCurtain) {
-			mPaint.setStyle(Paint.Style.FILL);
-			mPaint.setColor(mCurtainColor);
-			canvas.drawRect(mSelectedItemRect, mPaint);
+		if (!TextUtils.isEmpty(mIndicatorText)) {
+			mPaint.setColor(mIndicatorTextColor);
+			mPaint.setTextSize(mIndicatorTextSize);
+			mPaint.setTextAlign(Paint.Align.LEFT);
+			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mPaint);
 		}
 
 	}
@@ -852,7 +898,35 @@ public class WheelPicker<T> extends View {
         postInvalidate();
     }
 
-    public interface OnWheelChangeListener<T> {
+	public void setIndicatorText(String indicatorText) {
+		mIndicatorText = indicatorText;
+		postInvalidate();
+	}
+
+	public void setIndicatorTextColor(int indicatorTextColor) {
+		mIndicatorTextColor = indicatorTextColor;
+		postInvalidate();
+	}
+
+	public void setIndicatorTextSize(int indicatorTextSize) {
+		mIndicatorTextSize = indicatorTextSize;
+		postInvalidate();
+	}
+
+	/**
+	 * 设置数据集格式
+	 * @param dataFormat 格式
+	 */
+	public void setDataFormat(Format dataFormat) {
+		mDataFormat = dataFormat;
+		postInvalidate();
+	}
+
+	public Format getDataFormat() {
+		return mDataFormat;
+	}
+
+	public interface OnWheelChangeListener<T> {
 		void onWheelSelected(T item, int position);
 	}
 }

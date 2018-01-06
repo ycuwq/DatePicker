@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DatePicker</string>
+    <string name="year"> Y</string>
+    <string name="month"> M</string>
+    <string name="day"> D</string>
+</resources>

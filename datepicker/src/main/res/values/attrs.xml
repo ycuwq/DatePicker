@@ -17,6 +17,9 @@
         <attr name="wheelCurtainColor" format="color"/>
         <attr name="wheelCurtainBorder" format="boolean"/>
         <attr name="wheelCurtainBorderColor" format="color"/>
+        <attr name="indicatorText" format="string"/>
+        <attr name="indicatorTextSize" format="dimension"/>
+        <attr name="indicatorTextColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="YearPicker">

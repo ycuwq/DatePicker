@@ -2,10 +2,10 @@ package com.ycuwq.datepicker.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 
 import com.ycuwq.datepicker.date.DatePicker;
+import com.ycuwq.datepicker.date.DatePickerDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
 		DatePicker datePicker = findViewById(R.id.datePicker);
 		Button button = findViewById(R.id.button);
 		button.setOnClickListener(v -> {
-			Log.i(TAG, "onCreate: " + datePicker.getDate());
+			DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+			datePickerDialogFragment.show(getFragmentManager(), "DatePickerDialogFragment");
 		});
 	}
 }

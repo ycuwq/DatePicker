@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.ycuwq.datepicker.WheelPicker;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,6 +35,10 @@ public class DayPicker extends WheelPicker<Integer>{
 
     public DayPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+	    setItemMaximumWidthText("00");
+	    NumberFormat numberFormat = NumberFormat.getNumberInstance();
+	    numberFormat.setMinimumIntegerDigits(2);
+	    setDataFormat(numberFormat);
         mEndDay = Calendar.getInstance().getActualMaximum(Calendar.DATE);
         updateDay();
         mSelectedDay = Calendar.getInstance().get(Calendar.DATE);

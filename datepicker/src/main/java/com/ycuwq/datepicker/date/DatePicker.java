@@ -58,7 +58,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		boolean isTextGradual = a.getBoolean(R.styleable.DatePicker_dateTextGradual, true);
 		boolean isCyclic = a.getBoolean(R.styleable.DatePicker_cyclic, false);
 		int halfVisibleItemCount = a.getInteger(R.styleable.DatePicker_dateHalfVisibleItemCount, 2);
-		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_dateSelectedTextColor, Color.RED);
+		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_dateSelectedTextColor,
+				getResources().getColor(R.color.selectedTextColor));
 		int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.DatePicker_dateSelectedTextSize,
 				getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
 		int itemWidthSpace = a.getDimensionPixelSize(R.styleable.DatePicker_dateItemWidthSpace,
@@ -67,10 +68,10 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 				getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
 		boolean isZoomInCenterItem = a.getBoolean(R.styleable.DatePicker_dateZoomInCenterItem, true);
 		boolean isShowCurtain = a.getBoolean(R.styleable.DatePicker_curtain, true);
-		int curtainColor = a.getColor(R.styleable.DatePicker_curtainColor,
-				Color.parseColor("#303d3d3d"));
+		int curtainColor = a.getColor(R.styleable.DatePicker_curtainColor, Color.WHITE);
 		boolean isShowCurtainBorder = a.getBoolean(R.styleable.DatePicker_curtainBorder, true);
-		int curtainBorderColor = a.getColor(R.styleable.DatePicker_curtainBorderColor, Color.BLACK);
+		int curtainBorderColor = a.getColor(R.styleable.DatePicker_curtainBorderColor,
+				getResources().getColor(R.color.divider));
 		a.recycle();
 
 		setTextSize(textSize);
