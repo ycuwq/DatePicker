@@ -114,6 +114,16 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker.setMonth(year, month);
 	}
 
+	public void setDate(int year, int month, int day) {
+		setDate(year, month, day, true);
+	}
+
+	public void setDate(int year, int month, int day, boolean smoothScroll) {
+		mYearPicker.setSelectedYear(year, smoothScroll);
+		mMonthPicker.setSelectedMonth(month, smoothScroll);
+		mDayPicker.setSelectedDay(day, smoothScroll);
+	}
+
 	public String getDate() {
 		DateFormat format = SimpleDateFormat.getDateInstance();
 		return getDate(format);
