@@ -9,7 +9,6 @@ import com.ycuwq.datepicker.date.DatePicker;
 import com.ycuwq.datepicker.date.DatePickerDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private final String TAG = getClass().getSimpleName();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

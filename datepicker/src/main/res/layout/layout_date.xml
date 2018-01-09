@@ -9,14 +9,12 @@
     <com.ycuwq.datepicker.date.YearPicker
         android:id="@+id/yearPicker"
         app:halfVisibleItemCount="2"
-        app:indicatorText="@string/year"
         app:indicatorTextSize="12sp"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
     <com.ycuwq.datepicker.date.MonthPicker
         android:id="@+id/monthPicker"
-        app:indicatorText="@string/month"
         app:indicatorTextSize="12sp"
         app:halfVisibleItemCount="2"
         android:layout_weight="1"
@@ -24,7 +22,6 @@
         android:layout_height="wrap_content" />
     <com.ycuwq.datepicker.date.DayPicker
         android:id="@+id/dayPicker"
-        app:indicatorText="@string/day"
         app:indicatorTextSize="12sp"
         app:halfVisibleItemCount="2"
         android:layout_weight="1"

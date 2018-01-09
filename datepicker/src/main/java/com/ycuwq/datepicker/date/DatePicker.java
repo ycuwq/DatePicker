@@ -27,7 +27,6 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	private YearPicker mYearPicker;
 	private MonthPicker mMonthPicker;
 	private DayPicker mDayPicker;
-	private Context mContext;
 
 	public DatePicker(Context context) {
 		this(context, null);
@@ -41,7 +40,6 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		super(context, attrs, defStyleAttr);
 
 		LayoutInflater.from(context).inflate(R.layout.layout_date, this);
-		mContext = context;
 		initChild();
 		initAttrs(context, attrs);
 	}
@@ -298,5 +296,37 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker.setCurtainBorderColor(curtainBorderColor);
 		mMonthPicker.setCurtainBorderColor(curtainBorderColor);
 		mYearPicker.setCurtainBorderColor(curtainBorderColor);
+	}
+
+	/**
+	 * 设置选择器的指示器文本
+	 * @param yearText 年指示器文本
+	 * @param monthText 月指示器文本
+	 * @param dayText 日指示器文本
+	 */
+	public void setIndicatorText(String yearText, String monthText, String dayText) {
+		mYearPicker.setIndicatorText(yearText);
+		mMonthPicker.setIndicatorText(monthText);
+		mDayPicker.setIndicatorText(dayText);
+	}
+
+	/**
+	 * 设置指示器文字的颜色
+	 * @param textColor 文本颜色
+	 */
+	public void setIndicatorTextColor(@ColorInt int textColor) {
+		mYearPicker.setIndicatorTextColor(textColor);
+		mMonthPicker.setIndicatorTextColor(textColor);
+		mDayPicker.setIndicatorTextColor(textColor);
+	}
+
+	/**
+	 * 设置指示器文字的大小
+	 * @param textSize 文本大小
+	 */
+	public void setIndicatorTextSize(int textSize) {
+		mYearPicker.setTextSize(textSize);
+		mMonthPicker.setTextSize(textSize);
+		mDayPicker.setTextSize(textSize);
 	}
 }

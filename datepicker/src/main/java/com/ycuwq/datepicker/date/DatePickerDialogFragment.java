@@ -24,7 +24,7 @@ public class DatePickerDialogFragment extends DialogFragment {
 	private int mSelectedYear = -1, mSelectedMonth = -1, mSelectedDay = -1;
 	private OnDateChooseListener mOnDateChooseListener;
 	private boolean mIsShowAnimation = true;
-
+	protected Button mCancelButton, mConfirmButton;
 	public static DatePickerDialogFragment getInstance(OnDateChooseListener onDateChooseListener) {
 		DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
 		datePickerDialogFragment.setOnDateChooseListener(onDateChooseListener);
@@ -45,15 +45,15 @@ public class DatePickerDialogFragment extends DialogFragment {
 		View view = inflater.inflate(R.layout.dialog_date, container);
 
 		mDatePicker = view.findViewById(R.id.dayPicker_dialog);
-		Button cancelButton = view.findViewById(R.id.btn_cancel);
-		Button confirmButton = view.findViewById(R.id.btn_confirm);
-		cancelButton.setOnClickListener(new View.OnClickListener() {
+		mCancelButton = view.findViewById(R.id.btn_cancel);
+		mConfirmButton = view.findViewById(R.id.btn_confirm);
+		mCancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();
 			}
 		});
-		confirmButton.setOnClickListener(new View.OnClickListener() {
+		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mOnDateChooseListener != null) {
@@ -67,7 +67,13 @@ public class DatePickerDialogFragment extends DialogFragment {
 		if (mSelectedYear > 0) {
 			setSelectedDate();
 		}
+
+		initChild();
 		return view;
+	}
+
+	protected void initChild() {
+
 	}
 
 	@Override
@@ -108,4 +114,6 @@ public class DatePickerDialogFragment extends DialogFragment {
 	public interface OnDateChooseListener {
 		void onDateChoose(int year, int month, int day);
 	}
+
+
 }
