@@ -8,6 +8,13 @@
     android:layout_height="match_parent"
     tools:context="com.ycuwq.datepicker.sample.MainActivity">
 
+    <TextView
+        android:id="@+id/tv_date"
+        android:padding="8dp"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <com.ycuwq.datepicker.date.DatePicker
         android:id="@+id/datePicker"
         android:layout_width="match_parent"

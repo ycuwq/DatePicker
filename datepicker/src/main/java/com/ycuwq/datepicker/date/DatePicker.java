@@ -28,6 +28,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	private MonthPicker mMonthPicker;
 	private DayPicker mDayPicker;
 
+	private OnDateSelectedListener mOnDateSelectedListener;
+
 	public DatePicker(Context context) {
 		this(context, null);
 	}
@@ -96,20 +98,30 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker.setOnDaySelectedListener(this);
 	}
 
+	private void onDateSelected() {
+		if (mOnDateSelectedListener != null) {
+			mOnDateSelectedListener.onDateSelected(mYearPicker.getSelectedYear(),
+					mMonthPicker.getSelectedMonth(), mDayPicker.getSelectedDay());
+		}
+	}
+
+
 	@Override
 	public void onMonthSelected(int month) {
 		mDayPicker.setMonth(getYear(), month);
+		onDateSelected();
 	}
 
 	@Override
 	public void onDaySelected(int day) {
-
+		onDateSelected();
 	}
 
 	@Override
 	public void onYearSelected(int year) {
 		int month = getMonth();
 		mDayPicker.setMonth(year, month);
+		onDateSelected();
 	}
 
 	public void setDate(int year, int month, int day) {
@@ -328,5 +340,13 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mYearPicker.setTextSize(textSize);
 		mMonthPicker.setTextSize(textSize);
 		mDayPicker.setTextSize(textSize);
+	}
+
+	public void setOnDateSelectedListener(OnDateSelectedListener onDateSelectedListener) {
+		mOnDateSelectedListener = onDateSelectedListener;
+	}
+
+	public interface OnDateSelectedListener {
+		void onDateSelected(int year, int month, int day);
 	}
 }
