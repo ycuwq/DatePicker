@@ -1,8 +1,4 @@
 <resources>
-    <string name="app_name">DatePicker</string>
-    <string name="year"> Y</string>
-    <string name="month"> M</string>
-    <string name="day"> D</string>
-    <string name="cancel">Cancel</string>
-    <string name="decide">Decide</string>
+    <string name="ycuwq_datepicker_cancel">Cancel</string>
+    <string name="ycuew_datepicker_decide">Decide</string>
 </resources>

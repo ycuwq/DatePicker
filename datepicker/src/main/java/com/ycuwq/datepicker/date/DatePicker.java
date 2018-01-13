@@ -30,14 +30,32 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	private OnDateSelectedListener mOnDateSelectedListener;
 
+	/**
+	 * Instantiates a new Date picker.
+	 *
+	 * @param context the context
+	 */
 	public DatePicker(Context context) {
 		this(context, null);
 	}
 
+	/**
+	 * Instantiates a new Date picker.
+	 *
+	 * @param context the context
+	 * @param attrs   the attrs
+	 */
 	public DatePicker(Context context, @Nullable AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
+	/**
+	 * Instantiates a new Date picker.
+	 *
+	 * @param context      the context
+	 * @param attrs        the attrs
+	 * @param defStyleAttr the def style attr
+	 */
 	public DatePicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 
@@ -124,21 +142,47 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		onDateSelected();
 	}
 
+	/**
+	 * Sets date.
+	 *
+	 * @param year  the year
+	 * @param month the month
+	 * @param day   the day
+	 */
 	public void setDate(int year, int month, int day) {
 		setDate(year, month, day, true);
 	}
 
+	/**
+	 * Sets date.
+	 *
+	 * @param year         the year
+	 * @param month        the month
+	 * @param day          the day
+	 * @param smoothScroll the smooth scroll
+	 */
 	public void setDate(int year, int month, int day, boolean smoothScroll) {
 		mYearPicker.setSelectedYear(year, smoothScroll);
 		mMonthPicker.setSelectedMonth(month, smoothScroll);
 		mDayPicker.setSelectedDay(day, smoothScroll);
 	}
 
+	/**
+	 * Gets date.
+	 *
+	 * @return the date
+	 */
 	public String getDate() {
 		DateFormat format = SimpleDateFormat.getDateInstance();
 		return getDate(format);
 	}
 
+	/**
+	 * Gets date.
+	 *
+	 * @param dateFormat the date format
+	 * @return the date
+	 */
 	public String getDate(@NonNull DateFormat dateFormat) {
 		int year, month, day;
 		year = getYear();
@@ -150,32 +194,63 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		return dateFormat.format(calendar.getTime());
 	}
 
+	/**
+	 * Gets year.
+	 *
+	 * @return the year
+	 */
 	public int getYear() {
 		return mYearPicker.getSelectedYear();
 	}
 
+	/**
+	 * Gets month.
+	 *
+	 * @return the month
+	 */
 	public int getMonth() {
 		return mMonthPicker.getSelectedMonth();
 	}
 
+	/**
+	 * Gets day.
+	 *
+	 * @return the day
+	 */
 	public int getDay() {
 		return mDayPicker.getSelectedDay();
 	}
 
+	/**
+	 * Gets year picker.
+	 *
+	 * @return the year picker
+	 */
 	public YearPicker getYearPicker() {
 		return mYearPicker;
 	}
 
+	/**
+	 * Gets month picker.
+	 *
+	 * @return the month picker
+	 */
 	public MonthPicker getMonthPicker() {
 		return mMonthPicker;
 	}
 
+	/**
+	 * Gets day picker.
+	 *
+	 * @return the day picker
+	 */
 	public DayPicker getDayPicker() {
 		return mDayPicker;
 	}
 
 	/**
 	 * 一般列表的文本颜色
+	 *
 	 * @param textColor 文本颜色
 	 */
 	public void setTextColor(@ColorInt int textColor) {
@@ -186,6 +261,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 一般列表的文本大小
+	 *
 	 * @param textSize 文字大小
 	 */
 	public void setTextSize(int textSize) {
@@ -196,6 +272,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置被选中时候的文本颜色
+	 *
 	 * @param selectedItemTextColor 文本颜色
 	 */
 	public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
@@ -206,6 +283,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置被选中时候的文本大小
+	 *
 	 * @param selectedItemTextSize 文字大小
 	 */
 	public void setSelectedItemTextSize(int selectedItemTextSize) {
@@ -217,7 +295,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置显示数据量的个数的一半。
-	 * 为保证总显示个数为奇数,这里将总数拆分，总数为 mHalfVisibleItemCount * 2 + 1
+	 * 为保证总显示个数为奇数,这里将总数拆分，itemCount = mHalfVisibleItemCount * 2 + 1
+	 *
 	 * @param halfVisibleItemCount 总数量的一半
 	 */
 	public void setHalfVisibleItemCount(int halfVisibleItemCount) {
@@ -226,6 +305,11 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mYearPicker.setHalfVisibleItemCount(halfVisibleItemCount);
 	}
 
+	/**
+	 * Sets item width space.
+	 *
+	 * @param itemWidthSpace the item width space
+	 */
 	public void setItemWidthSpace(int itemWidthSpace) {
 		mDayPicker.setItemWidthSpace(itemWidthSpace);
 		mMonthPicker.setItemWidthSpace(itemWidthSpace);
@@ -234,6 +318,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置两个Item之间的间隔
+	 *
 	 * @param itemHeightSpace 间隔值
 	 */
 	public void setItemHeightSpace(int itemHeightSpace) {
@@ -243,6 +328,11 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	}
 
 
+	/**
+	 * Set zoom in center item.
+	 *
+	 * @param zoomInCenterItem the zoom in center item
+	 */
 	public void setZoomInCenterItem(boolean zoomInCenterItem) {
 		mDayPicker.setZoomInCenterItem(zoomInCenterItem);
 		mMonthPicker.setZoomInCenterItem(zoomInCenterItem);
@@ -251,6 +341,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置是否循环滚动。
+	 * set wheel cyclic
 	 * @param cyclic 上下边界是否相邻
 	 */
 	public void setCyclic(boolean cyclic) {
@@ -261,6 +352,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置文字渐变，离中心越远越淡。
+	 * Set the text color gradient
 	 * @param textGradual 是否渐变
 	 */
 	public void setTextGradual(boolean textGradual) {
@@ -272,6 +364,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置中心Item是否有幕布遮盖
+	 * set the center item curtain cover
 	 * @param showCurtain 是否有幕布
 	 */
 	public void setShowCurtain(boolean showCurtain) {
@@ -282,6 +375,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置幕布颜色
+	 * set curtain color
 	 * @param curtainColor 幕布颜色
 	 */
 	public void setCurtainColor(@ColorInt int curtainColor) {
@@ -292,6 +386,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置幕布是否显示边框
+	 * set curtain border
 	 * @param showCurtainBorder 是否有幕布边框
 	 */
 	public void setShowCurtainBorder(boolean showCurtainBorder) {
@@ -302,6 +397,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 幕布边框的颜色
+	 * curtain border color
 	 * @param curtainBorderColor 幕布边框颜色
 	 */
 	public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
@@ -312,9 +408,10 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置选择器的指示器文本
-	 * @param yearText 年指示器文本
+	 * set indicator text
+	 * @param yearText  年指示器文本
 	 * @param monthText 月指示器文本
-	 * @param dayText 日指示器文本
+	 * @param dayText   日指示器文本
 	 */
 	public void setIndicatorText(String yearText, String monthText, String dayText) {
 		mYearPicker.setIndicatorText(yearText);
@@ -324,6 +421,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置指示器文字的颜色
+	 * set indicator text color
 	 * @param textColor 文本颜色
 	 */
 	public void setIndicatorTextColor(@ColorInt int textColor) {
@@ -334,6 +432,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	/**
 	 * 设置指示器文字的大小
+	 *  indicator text size
 	 * @param textSize 文本大小
 	 */
 	public void setIndicatorTextSize(int textSize) {
@@ -342,11 +441,26 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker.setTextSize(textSize);
 	}
 
+	/**
+	 * Sets on date selected listener.
+	 *
+	 * @param onDateSelectedListener the on date selected listener
+	 */
 	public void setOnDateSelectedListener(OnDateSelectedListener onDateSelectedListener) {
 		mOnDateSelectedListener = onDateSelectedListener;
 	}
 
+	/**
+	 * The interface On date selected listener.
+	 */
 	public interface OnDateSelectedListener {
+		/**
+		 * On date selected.
+		 *
+		 * @param year  the year
+		 * @param month the month
+		 * @param day   the day
+		 */
 		void onDateSelected(int year, int month, int day);
 	}
 }
