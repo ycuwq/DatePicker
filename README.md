@@ -6,7 +6,7 @@ Android date picker widget.
 
 [Repo Wiki](https://github.com/ycuwq/DatePicker/wiki)
 
- [简体中文说明](./README-CN)
+ [简体中文说明](./README-CN.md)
 
 ## Import 
 
