@@ -16,20 +16,15 @@ import com.ycuwq.datepicker.R;
 
 /**
  * 时间选择器，弹出框
- * Created by 杨晨 on 2018/1/6.
+ * Created by ycuwq on 2018/1/6.
  */
 public class DatePickerDialogFragment extends DialogFragment {
 
-	private DatePicker mDatePicker;
+	protected DatePicker mDatePicker;
 	private int mSelectedYear = -1, mSelectedMonth = -1, mSelectedDay = -1;
 	private OnDateChooseListener mOnDateChooseListener;
 	private boolean mIsShowAnimation = true;
-	protected Button mCancelButton, mConfirmButton;
-	public static DatePickerDialogFragment getInstance(OnDateChooseListener onDateChooseListener) {
-		DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
-		datePickerDialogFragment.setOnDateChooseListener(onDateChooseListener);
-		return datePickerDialogFragment;
-	}
+	protected Button mCancelButton, mDecideButton;
 
 	public void setOnDateChooseListener(OnDateChooseListener onDateChooseListener) {
 		mOnDateChooseListener = onDateChooseListener;
@@ -46,14 +41,14 @@ public class DatePickerDialogFragment extends DialogFragment {
 
 		mDatePicker = view.findViewById(R.id.dayPicker_dialog);
 		mCancelButton = view.findViewById(R.id.btn_cancel);
-		mConfirmButton = view.findViewById(R.id.btn_confirm);
+		mDecideButton = view.findViewById(R.id.btn_decide);
 		mCancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();
 			}
 		});
-		mConfirmButton.setOnClickListener(new View.OnClickListener() {
+		mDecideButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mOnDateChooseListener != null) {

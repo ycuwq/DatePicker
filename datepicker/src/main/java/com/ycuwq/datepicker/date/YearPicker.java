@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 年份选择器
- * Created by yangchen on 17-12-27.
+ * Created by ycuwq on 17-12-27.
  */
 @SuppressWarnings("unused")
 public class YearPicker extends WheelPicker<Integer> {

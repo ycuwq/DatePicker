@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -27,7 +26,7 @@ import java.util.List;
 
 /**
  * 滚动选择器
- * Created by yangchen on 2017/12/12.
+ * Created by ycuwq on 2017/12/12.
  */
 @SuppressWarnings({"FieldCanBeLocal", "unused", "SameParameterValue"})
 public class WheelPicker<T> extends View {

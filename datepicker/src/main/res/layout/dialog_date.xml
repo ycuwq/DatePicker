@@ -25,9 +25,9 @@
             android:layout_width="1px"
             android:layout_height="match_parent" />
         <Button
-            android:id="@+id/btn_confirm"
+            android:id="@+id/btn_decide"
             android:background="#f7f7f7"
-            android:text="@string/confirm"
+            android:text="@string/decide"
             android:textColor="@color/selectedTextColor"
             android:layout_weight="1"
             android:layout_width="0dp"

@@ -18,7 +18,7 @@ import java.util.Calendar;
 
 /**
  * 日期选择器
- * Created by 杨晨 on 2018/1/1.
+ * Created by ycuwq on 2018/1/1.
  */
 @SuppressWarnings("unused")
 public class DatePicker extends LinearLayout implements YearPicker.OnYearSelectedListener,

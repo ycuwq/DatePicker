@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * 月份选择器
- * Created by yangchen on 17-12-28.
+ * Created by ycuwq on 17-12-28.
  */
 public class MonthPicker extends WheelPicker<Integer> {
 

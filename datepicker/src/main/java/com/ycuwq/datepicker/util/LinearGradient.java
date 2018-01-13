@@ -5,7 +5,7 @@ import android.support.annotation.ColorInt;
 
 /**
  * 颜色线性渐变工具
- * Created by 杨晨 on 2018/1/6.
+ * Created by ycuwq on 2018/1/6.
  */
 public class LinearGradient {
 	private int mStartColor;

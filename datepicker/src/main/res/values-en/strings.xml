@@ -4,4 +4,6 @@
     <string name="year"> Y</string>
     <string name="month"> M</string>
     <string name="day"> D</string>
+    <string name="cancel">Cancel</string>
+    <string name="decide">Decide</string>
 </resources>
