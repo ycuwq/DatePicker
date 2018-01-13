@@ -12,7 +12,7 @@ Android 日期选择器控件。
 
 ```
 dependencies {
-	implementation 'com.ycuwq.widgets:datepicker:1.0.0'
+	implementation 'com.ycuwq.widgets:datepicker:1.0.1'
 }
 ```
 

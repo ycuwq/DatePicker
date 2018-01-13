@@ -14,7 +14,7 @@ Add the dependency to your app modules:
 
 ```
 dependencies {
-	implementation 'com.ycuwq.widgets:datepicker:1.0.0'
+	implementation 'com.ycuwq.widgets:datepicker:1.0.1'
 }
 ```
 
