@@ -1,5 +1,7 @@
 # DatePicker
 
+[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion)[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+
 Android date picker widget.
 
 ![screen](https://raw.githubusercontent.com/ycuwq/DatePicker/master/screenshots/device-2018-01-11-193707.gif)
@@ -14,7 +16,7 @@ Add the dependency to your app modules:
 
 ```
 dependencies {
-	implementation 'com.ycuwq.widgets:datepicker:1.0.1'
+	implementation 'com.ycuwq.widgets:datepicker:latest-version'
 }
 ```
 

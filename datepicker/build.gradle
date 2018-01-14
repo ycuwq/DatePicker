@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -35,7 +35,7 @@ publish {
     repoName = 'android'
     groupId = 'com.ycuwq.widgets'
     artifactId = 'datepicker'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'Android date picker widget'
     website = 'https://github.com/ycuwq/DatePicker'
     licences = ['MIT']

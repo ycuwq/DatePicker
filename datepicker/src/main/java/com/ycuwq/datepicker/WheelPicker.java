@@ -112,7 +112,7 @@ public class WheelPicker<T> extends View {
     /**
      * 是否将中间的Item放大
      */
-    private boolean mIsZoomInCenterItem;
+    private boolean mIsZoomInSelectedItem;
 
 	/**
 	 * 是否显示幕布，中央Item会遮盖一个颜色颜色
@@ -293,7 +293,7 @@ public class WheelPicker<T> extends View {
                 getResources().getDimensionPixelOffset(R.dimen.WheelItemWidthSpace));
         mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
                 getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
-        mIsZoomInCenterItem = a.getBoolean(R.styleable.WheelPicker_zoomInCenterItem, true);
+        mIsZoomInSelectedItem = a.getBoolean(R.styleable.WheelPicker_zoomInSelectedItem, true);
         mIsShowCurtain = a.getBoolean(R.styleable.WheelPicker_wheelCurtain, true);
         mCurtainColor = a.getColor(R.styleable.WheelPicker_wheelCurtainColor,
 		        Color.parseColor("#303d3d3d"));
@@ -463,7 +463,7 @@ public class WheelPicker<T> extends View {
 			}
 
 			//开启此选项,会将越靠近中心的Item字体放大
-			if (mIsZoomInCenterItem) {
+			if (mIsZoomInSelectedItem) {
                 if (distanceY < mItemHeight) {
                     float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
                     mPaint.setTextSize(mTextSize + addedSize);
@@ -765,15 +765,15 @@ public class WheelPicker<T> extends View {
         }
     }
 
-    public boolean isZoomInCenterItem() {
-        return mIsZoomInCenterItem;
+    public boolean isZoomInSelectedItem() {
+        return mIsZoomInSelectedItem;
     }
 
-    public void setZoomInCenterItem(boolean zoomInCenterItem) {
-	    if (mIsZoomInCenterItem == zoomInCenterItem) {
+    public void setZoomInSelectedItem(boolean zoomInSelectedItem) {
+	    if (mIsZoomInSelectedItem == zoomInSelectedItem) {
 		    return;
 	    }
-        mIsZoomInCenterItem = zoomInCenterItem;
+        mIsZoomInSelectedItem = zoomInSelectedItem;
         postInvalidate();
     }
 

@@ -69,26 +69,26 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 			return;
 		}
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DatePicker);
-		int textSize = a.getDimensionPixelSize(R.styleable.DatePicker_dateTextSize,
+		int textSize = a.getDimensionPixelSize(R.styleable.DatePicker_itemTextSize,
 				getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
-		int textColor = a.getColor(R.styleable.DatePicker_dateTextColor,
+		int textColor = a.getColor(R.styleable.DatePicker_itemTextColor,
 				Color.BLACK);
-		boolean isTextGradual = a.getBoolean(R.styleable.DatePicker_dateTextGradual, true);
-		boolean isCyclic = a.getBoolean(R.styleable.DatePicker_cyclic, false);
-		int halfVisibleItemCount = a.getInteger(R.styleable.DatePicker_dateHalfVisibleItemCount, 2);
-		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_dateSelectedTextColor,
+		boolean isTextGradual = a.getBoolean(R.styleable.DatePicker_textGradual, true);
+		boolean isCyclic = a.getBoolean(R.styleable.DatePicker_wheelCyclic, false);
+		int halfVisibleItemCount = a.getInteger(R.styleable.DatePicker_halfVisibleItemCount, 2);
+		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_selectedTextColor,
 				getResources().getColor(R.color.selectedTextColor));
-		int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.DatePicker_dateSelectedTextSize,
+		int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.DatePicker_selectedTextSize,
 				getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
-		int itemWidthSpace = a.getDimensionPixelSize(R.styleable.DatePicker_dateItemWidthSpace,
+		int itemWidthSpace = a.getDimensionPixelSize(R.styleable.DatePicker_itemWidthSpace,
 				getResources().getDimensionPixelOffset(R.dimen.WheelItemWidthSpace));
-		int itemHeightSpace = a.getDimensionPixelSize(R.styleable.DatePicker_dateItemHeightSpace,
+		int itemHeightSpace = a.getDimensionPixelSize(R.styleable.DatePicker_itemHeightSpace,
 				getResources().getDimensionPixelOffset(R.dimen.WheelItemHeightSpace));
-		boolean isZoomInCenterItem = a.getBoolean(R.styleable.DatePicker_dateZoomInCenterItem, true);
-		boolean isShowCurtain = a.getBoolean(R.styleable.DatePicker_curtain, true);
-		int curtainColor = a.getColor(R.styleable.DatePicker_curtainColor, Color.WHITE);
-		boolean isShowCurtainBorder = a.getBoolean(R.styleable.DatePicker_curtainBorder, true);
-		int curtainBorderColor = a.getColor(R.styleable.DatePicker_curtainBorderColor,
+		boolean isZoomInSelectedItem = a.getBoolean(R.styleable.DatePicker_zoomInSelectedItem, true);
+		boolean isShowCurtain = a.getBoolean(R.styleable.DatePicker_wheelCurtain, true);
+		int curtainColor = a.getColor(R.styleable.DatePicker_wheelCurtainColor, Color.WHITE);
+		boolean isShowCurtainBorder = a.getBoolean(R.styleable.DatePicker_wheelCurtainBorder, true);
+		int curtainBorderColor = a.getColor(R.styleable.DatePicker_wheelCurtainBorderColor,
 				getResources().getColor(R.color.divider));
 		a.recycle();
 
@@ -101,7 +101,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		setSelectedItemTextSize(selectedItemTextSize);
 		setItemWidthSpace(itemWidthSpace);
 		setItemHeightSpace(itemHeightSpace);
-		setZoomInCenterItem(isZoomInCenterItem);
+		setZoomInSelectedItem(isZoomInSelectedItem);
 		setShowCurtain(isShowCurtain);
 		setCurtainColor(curtainColor);
 		setShowCurtainBorder(isShowCurtainBorder);
@@ -331,12 +331,12 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	/**
 	 * Set zoom in center item.
 	 *
-	 * @param zoomInCenterItem the zoom in center item
+	 * @param zoomInSelectedItem the zoom in center item
 	 */
-	public void setZoomInCenterItem(boolean zoomInCenterItem) {
-		mDayPicker.setZoomInCenterItem(zoomInCenterItem);
-		mMonthPicker.setZoomInCenterItem(zoomInCenterItem);
-		mYearPicker.setZoomInCenterItem(zoomInCenterItem);
+	public void setZoomInSelectedItem(boolean zoomInSelectedItem) {
+		mDayPicker.setZoomInSelectedItem(zoomInSelectedItem);
+		mMonthPicker.setZoomInSelectedItem(zoomInSelectedItem);
+		mYearPicker.setZoomInSelectedItem(zoomInSelectedItem);
 	}
 
 	/**
