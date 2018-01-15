@@ -1,6 +1,6 @@
 # DatePicker
 
-[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion)[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion) [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 Android date picker widget.
 
@@ -38,7 +38,7 @@ dependencies {
 ```
 DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
 datePickerDialogFragment.setOnDateChooseListener(...);
-datePickerDialogFragment.show(getFragmentManager(), "DatePickerDialogFragment");
+datePickerDialogFragment.show(getSupportFragmentManager(), "DatePickerDialogFragment");
 ```
 
 If you want to customize the style ，for example:：

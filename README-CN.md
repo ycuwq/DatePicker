@@ -34,7 +34,7 @@ dependencies {
 ```
 DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
 datePickerDialogFragment.setOnDateChooseListener(...);
-datePickerDialogFragment.show(getFragmentManager(), "DatePickerDialogFragment");
+datePickerDialogFragment.show(getSupportFragmentManager(), "DatePickerDialogFragment");
 ```
 
 如果想自定义属性需要继承`DialogFragment` ，例如：
