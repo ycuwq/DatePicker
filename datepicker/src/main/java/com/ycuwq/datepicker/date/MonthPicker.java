@@ -35,6 +35,7 @@ public class MonthPicker extends WheelPicker<Integer> {
 	    NumberFormat numberFormat = NumberFormat.getNumberInstance();
 	    numberFormat.setMinimumIntegerDigits(2);
 	    setDataFormat(numberFormat);
+
 		Calendar.getInstance().clear();
         mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
         updateMonth();

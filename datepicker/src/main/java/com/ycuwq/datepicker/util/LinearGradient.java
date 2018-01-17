@@ -25,7 +25,7 @@ public class LinearGradient {
 	}
 
 	public int getColor(float radio) {
-		int redStart = Color.red(mStartColor);
+        int redStart = Color.red(mStartColor);
 		int blueStart = Color.blue(mStartColor);
 		int greenStart = Color.green(mStartColor);
 		int redEnd = Color.red(mEndColor);

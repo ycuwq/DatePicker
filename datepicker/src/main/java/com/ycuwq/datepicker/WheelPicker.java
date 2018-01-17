@@ -183,6 +183,7 @@ public class WheelPicker<T> extends View {
 	 */
 	private boolean mIsCyclic = true;
 
+
 	/**
 	 * 最大可以Fling的距离
 	 */
@@ -305,14 +306,14 @@ public class WheelPicker<T> extends View {
 		a.recycle();
 	}
 
-
-
 	public void computeTextSize() {
         mTextMaxWidth = mTextMaxHeight = 0;
 		if (mDataList.size() == 0) {
 			return;
 		}
-        mPaint.setTextSize(mSelectedItemTextSize);
+
+		//这里使用最大的,防止文字大小超过布局大小。
+        mPaint.setTextSize(mSelectedItemTextSize > mTextSize ? mSelectedItemTextSize : mTextSize);
 
         if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
             mTextMaxWidth = (int) mPaint.measureText(mItemMaximumWidthText);
@@ -410,7 +411,7 @@ public class WheelPicker<T> extends View {
 		mPaint.setStyle(Paint.Style.FILL);
 		//首尾各多绘制一个用于缓冲
 		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
-            drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos ++) {
+            drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos++) {
 			int pos = drawDataPos;
 			if (mIsCyclic) {
 				if (pos < 0) {
@@ -436,7 +437,7 @@ public class WheelPicker<T> extends View {
 				mPaint.setColor(mTextColor);
 			}
 
-			T t = mDataList.get(pos);
+			T data = mDataList.get(pos);
 			int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 			//距离中心的Y轴距离
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
@@ -474,9 +475,9 @@ public class WheelPicker<T> extends View {
                 mPaint.setTextSize(mTextSize);
             }
             if (mDataFormat != null) {
-	            canvas.drawText(mDataFormat.format(t), mFirstItemDrawX, itemDrawY, mPaint);
+	            canvas.drawText(mDataFormat.format(data), mFirstItemDrawX, itemDrawY, mPaint);
             } else {
-	            canvas.drawText(t.toString(), mFirstItemDrawX, itemDrawY, mPaint);
+	            canvas.drawText(data.toString(), mFirstItemDrawX, itemDrawY, mPaint);
             }
 		}
 		if (!TextUtils.isEmpty(mIndicatorText)) {
@@ -529,9 +530,7 @@ public class WheelPicker<T> extends View {
                         int scrollItem = (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
                         mScroller.startScroll(0, mScrollOffsetY, 0,
                                 scrollItem * mItemHeight);
-
                     }
-
                 } else {
                     mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                     int velocity = (int) mTracker.getYVelocity();
