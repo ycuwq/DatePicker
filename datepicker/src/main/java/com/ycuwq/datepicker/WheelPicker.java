@@ -213,7 +213,6 @@ public class WheelPicker<T> extends View {
 				int scrollerCurrY = mScroller.getCurrY();
                 if (mIsCyclic) {
 					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
-					//判断超过上下限直接令其恢复到初始坐标的值
 
                     while (scrollerCurrY > visibleItemCount * mItemHeight) {
                         scrollerCurrY -= mDataList.size() * mItemHeight;
@@ -416,14 +415,11 @@ public class WheelPicker<T> extends View {
 			if (mIsCyclic) {
 				if (pos < 0) {
 					//将数据集限定在0 ~ mDataList.size()-1之间
-					while (pos < 0) {
-						pos += mDataList.size();
-					}
-				} else if (pos > mDataList.size() - 1) {
+                    pos = mDataList.size() + (pos % 10);
+
+				} else {
 					//将数据集限定在0 ~ mDataList.size()-1之间
-					while (pos >= mDataList.size()) {
-						pos -= mDataList.size();
-					}
+                    pos = pos % mDataList.size();
 				}
 			} else {
 				if (pos < 0 || pos > mDataList.size() - 1) {
@@ -565,13 +561,15 @@ public class WheelPicker<T> extends View {
     }
 
     private int computeDistanceToEndPoint(int remainder) {
-		if (Math.abs(remainder) > mItemHeight / 2)
-			if (mScrollOffsetY < 0)
-				return -mItemHeight - remainder;
-			else
-				return mItemHeight - remainder;
-		else
-			return -remainder;
+		if (Math.abs(remainder) > mItemHeight / 2) {
+            if (mScrollOffsetY < 0) {
+                return -mItemHeight - remainder;
+            } else {
+                return mItemHeight - remainder;
+            }
+        } else {
+            return -remainder;
+        }
 	}
 
 
