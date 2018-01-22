@@ -8,33 +8,46 @@ import android.support.annotation.ColorInt;
  * Created by ycuwq on 2018/1/6.
  */
 public class LinearGradient {
+
 	private int mStartColor;
 	private int mEndColor;
+	private int mRedStart;
+	private int mBlueStart;
+    private int mGreenStart;
+    private int mRedEnd;
+    private int mBlueEnd;
+    private int mGreenEnd;
 
 	public LinearGradient(@ColorInt int startColor, @ColorInt int endColor) {
 		mStartColor = startColor;
 		mEndColor = endColor;
+        updateColor();
 	}
+
 
 	public void setStartColor(@ColorInt int startColor) {
 		mStartColor = startColor;
+        updateColor();
 	}
 
 	public void setEndColor(@ColorInt int endColor) {
 		mEndColor = endColor;
+        updateColor();
 	}
 
-	public int getColor(float radio) {
-        int redStart = Color.red(mStartColor);
-		int blueStart = Color.blue(mStartColor);
-		int greenStart = Color.green(mStartColor);
-		int redEnd = Color.red(mEndColor);
-		int blueEnd = Color.blue(mEndColor);
-		int greenEnd = Color.green(mEndColor);
+    private void updateColor() {
+        mRedStart = Color.red(mStartColor);
+        mBlueStart = Color.blue(mStartColor);
+        mGreenStart = Color.green(mStartColor);
+        mRedEnd = Color.red(mEndColor);
+        mBlueEnd = Color.blue(mEndColor);
+        mGreenEnd = Color.green(mEndColor);
+    }
 
-		int red = (int) (redStart + ((redEnd - redStart) * radio + 0.5));
-		int greed = (int) (greenStart + ((greenEnd - greenStart) * radio + 0.5));
-		int blue = (int) (blueStart + ((blueEnd - blueStart) * radio + 0.5));
+	public int getColor(float ratio) {
+		int red = (int) (mRedStart + ((mRedEnd - mRedStart) * ratio + 0.5));
+		int greed = (int) (mGreenStart + ((mGreenEnd - mGreenStart) * ratio + 0.5));
+		int blue = (int) (mBlueStart + ((mBlueEnd - mBlueStart) * ratio + 0.5));
 		return Color.rgb(red, greed, blue);
 	}
 }

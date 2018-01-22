@@ -119,8 +119,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	private void onDateSelected() {
 		if (mOnDateSelectedListener != null) {
-			mOnDateSelectedListener.onDateSelected(mYearPicker.getSelectedYear(),
-					mMonthPicker.getSelectedMonth(), mDayPicker.getSelectedDay());
+			mOnDateSelectedListener.onDateSelected(getYear(),
+					getMonth(), getDay());
 		}
 	}
 

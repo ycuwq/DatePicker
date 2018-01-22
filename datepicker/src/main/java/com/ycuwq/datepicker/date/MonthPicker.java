@@ -68,10 +68,7 @@ public class MonthPicker extends WheelPicker<Integer> {
     }
 
     public void setSelectedMonth(int selectedMonth, boolean smoothScroll) {
-        if (selectedMonth < 1 || selectedMonth > 12) {
-            throw new IllegalArgumentException("selectedMonth:"
-                    + selectedMonth + "more than range" + "1~12");
-        }
+
         setCurrentPosition(selectedMonth - 1, smoothScroll);
     }
 

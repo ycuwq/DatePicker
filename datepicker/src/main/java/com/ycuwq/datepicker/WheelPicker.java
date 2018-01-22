@@ -439,21 +439,25 @@ public class WheelPicker<T> extends View {
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
 
 			if (mIsTextGradual) {
-				float alphaRadio;
+			    //计算文字颜色渐变
+                //文字颜色渐变要在设置透明度上边，否则会被覆盖
+                if (distanceY < mItemHeight) {
+                    float colorRatio = 1 - (distanceY / (float) mItemHeight);
+                    mPaint.setColor(mLinearGradient.getColor(colorRatio));
+                } else {
+                    mPaint.setColor(mTextColor);
+                }
+                //计算透明度渐变
+				float alphaRatio;
 				if (itemDrawY > mCenterItemDrawnY) {
-					alphaRadio =  (mDrawnRect.height() - itemDrawY) /
+					alphaRatio = (mDrawnRect.height() - itemDrawY) /
 							(float) (mDrawnRect.height() - (mCenterItemDrawnY));
 				} else {
-					alphaRadio = itemDrawY / (float) mCenterItemDrawnY;
+					alphaRatio = itemDrawY / (float) mCenterItemDrawnY;
 				}
-				if (distanceY < mItemHeight) {
-					float colorRadio = 1 - (distanceY / (float) mItemHeight);
-					mPaint.setColor(mLinearGradient.getColor(colorRadio));
-				} else {
-					mPaint.setColor(mTextColor);
-				}
-				alphaRadio = alphaRadio < 0 ? 0 :alphaRadio;
-				mPaint.setAlpha((int) (alphaRadio * 255));
+
+				alphaRatio = alphaRatio < 0 ? 0 :alphaRatio;
+				mPaint.setAlpha((int) (alphaRatio * 255));
             } else {
 				mPaint.setAlpha(255);
 				mPaint.setColor(mSelectedItemTextColor);
@@ -482,7 +486,6 @@ public class WheelPicker<T> extends View {
 			mPaint.setTextAlign(Paint.Align.LEFT);
 			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mPaint);
 		}
-
 	}
 
 
@@ -740,18 +743,20 @@ public class WheelPicker<T> extends View {
      * @param currentPosition 设置的当前位置
      * @param smoothScroll 是否平滑滚动
      */
-    public void setCurrentPosition(final int currentPosition, boolean smoothScroll) {
+    public void setCurrentPosition(int currentPosition, boolean smoothScroll) {
 	    if (mCurrentPosition == currentPosition) {
 	        return;
         }
+        if (currentPosition > mDataList.size()) {
+            currentPosition = mDataList.size() - 1;
+        }
+        if (currentPosition < 0) {
+            currentPosition = 0;
+        }
         if (smoothScroll) {
-	        post(new Runnable() {
-                @Override
-                public void run() {
-                    mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
-                    mHandler.post(mScrollerRunnable);
-                }
-            });
+	        //todo 正在滚动的时候触发坐标异常
+            mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
+            mHandler.post(mScrollerRunnable);
         } else {
             mCurrentPosition = currentPosition;
             mScrollOffsetY = -mItemHeight * mCurrentPosition;

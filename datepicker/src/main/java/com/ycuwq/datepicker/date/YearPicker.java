@@ -81,10 +81,7 @@ public class YearPicker extends WheelPicker<Integer> {
 
     public void setSelectedYear(int selectedYear, boolean smoothScroll) {
         mSelectedYear = selectedYear;
-        if (mSelectedYear < mStartYear || mSelectedYear > mEndYear) {
-            throw new IllegalArgumentException("selectedYear:"
-                    + selectedYear + "more than range" + mStartYear + " ` " + mEndYear);
-        }
+
         setCurrentPosition(mSelectedYear - mStartYear, smoothScroll);
     }
 

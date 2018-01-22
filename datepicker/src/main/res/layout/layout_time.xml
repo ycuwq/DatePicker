@@ -6,22 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.ycuwq.datepicker.date.YearPicker
-        android:id="@+id/yearPicker"
+    <com.ycuwq.datepicker.time.HourPicker
+        android:id="@+id/hourPicker"
+        app:halfVisibleItemCount="2"
+        app:indicatorText="@string/ycuwq_datepicker_hour"
+        app:wheelCyclic="true"
+        app:indicatorTextSize="12sp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <com.ycuwq.datepicker.time.MinutePicker
+        android:id="@+id/minutePicker"
+        app:wheelCyclic="true"
+        app:indicatorText="@string/ycuew_datepicker_minute"
+        app:indicatorTextSize="12sp"
         app:halfVisibleItemCount="2"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
-    <com.ycuwq.datepicker.date.MonthPicker
-        android:id="@+id/monthPicker"
-        app:halfVisibleItemCount="2"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
-    <com.ycuwq.datepicker.date.DayPicker
-        android:id="@+id/dayPicker"
-        app:halfVisibleItemCount="2"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+
 </LinearLayout>

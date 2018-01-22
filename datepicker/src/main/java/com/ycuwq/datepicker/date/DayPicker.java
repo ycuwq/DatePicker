@@ -75,10 +75,7 @@ public class DayPicker extends WheelPicker<Integer>{
     }
 
     public void setSelectedDay(int selectedDay, boolean smoothScroll) {
-        if (selectedDay < 1 || selectedDay > mEndDay) {
-            throw new IllegalArgumentException("selectedMonth:"
-                    + selectedDay + "more than range" + "1~12");
-        }
+
         setCurrentPosition(selectedDay - 1, smoothScroll);
     }
 
