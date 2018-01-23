@@ -753,9 +753,13 @@ public class WheelPicker<T> extends View {
         if (currentPosition < 0) {
             currentPosition = 0;
         }
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
         if (smoothScroll) {
-	        //todo 正在滚动的时候触发坐标异常
             mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
+            mScroller.setFinalY(mScroller.getFinalY() +
+                    computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
             mHandler.post(mScrollerRunnable);
         } else {
             mCurrentPosition = currentPosition;

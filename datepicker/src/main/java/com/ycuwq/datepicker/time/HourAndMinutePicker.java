@@ -60,7 +60,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         int textColor = a.getColor(R.styleable.HourAndMinutePicker_itemTextColor,
                 Color.BLACK);
         boolean isTextGradual = a.getBoolean(R.styleable.HourAndMinutePicker_textGradual, true);
-        boolean isCyclic = a.getBoolean(R.styleable.HourAndMinutePicker_wheelCyclic, false);
+        boolean isCyclic = a.getBoolean(R.styleable.HourAndMinutePicker_wheelCyclic, true);
         int halfVisibleItemCount = a.getInteger(R.styleable.HourAndMinutePicker_halfVisibleItemCount, 2);
         int selectedItemTextColor = a.getColor(R.styleable.HourAndMinutePicker_selectedTextColor,
                 getResources().getColor(R.color.selectedTextColor));
