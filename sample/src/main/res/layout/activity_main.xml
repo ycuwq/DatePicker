@@ -16,7 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <com.ycuwq.datepicker.date.DatePicker
+        android:visibility="gone"
         android:id="@+id/datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.ycuwq.datepicker.time.HourAndMinutePicker
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <Button

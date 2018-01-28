@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -213,13 +214,22 @@ public class WheelPicker<T> extends View {
 				int scrollerCurrY = mScroller.getCurrY();
                 if (mIsCyclic) {
 					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
+					//整个高度
+					int height = mDataList.size() * mItemHeight;
 
-                    while (scrollerCurrY > visibleItemCount * mItemHeight) {
-                        scrollerCurrY -= mDataList.size() * mItemHeight;
+					//这边要等到超过显示的长度后进行
+					if (scrollerCurrY > visibleItemCount * mItemHeight) {
+					    scrollerCurrY = scrollerCurrY % height;
                     }
-                    while (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-                        scrollerCurrY += mDataList.size() * mItemHeight;
+                    if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+					    scrollerCurrY = (scrollerCurrY % height) + height;
                     }
+//                    while (scrollerCurrY > visibleItemCount * mItemHeight) {
+//                        scrollerCurrY -= mDataList.size() * mItemHeight;
+//                    }
+//                    while (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+//                        scrollerCurrY += mDataList.size() * mItemHeight;
+//                    }
 				}
                 mScrollOffsetY = scrollerCurrY;
 				postInvalidate();
@@ -412,12 +422,13 @@ public class WheelPicker<T> extends View {
 		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos++) {
 			int pos = drawDataPos;
-			if (mIsCyclic) {
+            if (mIsCyclic) {
 				if (pos < 0) {
 					//将数据集限定在0 ~ mDataList.size()-1之间
-                    pos = mDataList.size() + (pos % 10);
+                    pos = mDataList.size() + (pos % mDataList.size());
 
-				} else {
+				}
+				if (pos >= mDataList.size()){
 					//将数据集限定在0 ~ mDataList.size()-1之间
                     pos = pos % mDataList.size();
 				}

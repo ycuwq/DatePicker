@@ -88,7 +88,9 @@ public class DatePickerDialogFragment extends DialogFragment {
 			WindowManager.LayoutParams lp = window.getAttributes();
 			lp.gravity = Gravity.BOTTOM; // 紧贴底部
 			lp.width = WindowManager.LayoutParams.MATCH_PARENT; // 宽度持平
+			lp.dimAmount = 0.35f;
 			window.setAttributes(lp);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		}
 
 		return dialog;
