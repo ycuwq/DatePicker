@@ -2,6 +2,7 @@ package com.ycuwq.datepicker.date;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
@@ -41,8 +42,8 @@ public class DatePickerDialogFragment extends DialogFragment {
 
 
 		mDatePicker = view.findViewById(R.id.dayPicker_dialog);
-		mCancelButton = view.findViewById(R.id.btn_cancel);
-		mDecideButton = view.findViewById(R.id.btn_decide);
+		mCancelButton = view.findViewById(R.id.btn_dialog_date_cancel);
+		mDecideButton = view.findViewById(R.id.btn_dialog_date_decide);
 		mCancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -72,9 +73,10 @@ public class DatePickerDialogFragment extends DialogFragment {
 
 	}
 
+	@NonNull
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Dialog dialog = new Dialog(getActivity(), R.style.BottomDialog);
+		Dialog dialog = new Dialog(getActivity(), R.style.DatePickerBottomDialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 设置Content前设定
 
 		dialog.setContentView(R.layout.dialog_date);
@@ -83,7 +85,7 @@ public class DatePickerDialogFragment extends DialogFragment {
 		Window window = dialog.getWindow();
 		if (window != null) {
 			if (mIsShowAnimation) {
-				window.getAttributes().windowAnimations = R.style.dialogAnim;
+				window.getAttributes().windowAnimations = R.style.DatePickerDialogAnim;
 			}
 			WindowManager.LayoutParams lp = window.getAttributes();
 			lp.gravity = Gravity.BOTTOM; // 紧贴底部

@@ -21,7 +21,7 @@ public class HourAndMinutePicker extends LinearLayout implements
 
     private HourPicker mHourPicker;
     private MinutePicker mMinutePicker;
-    private OnTimeListener mOnTimeListener;
+    private OnTimeSelectedListener mOnTimeSelectedListener;
 
     public HourAndMinutePicker(Context context) {
         this(context, null);
@@ -63,7 +63,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         boolean isCyclic = a.getBoolean(R.styleable.HourAndMinutePicker_wheelCyclic, true);
         int halfVisibleItemCount = a.getInteger(R.styleable.HourAndMinutePicker_halfVisibleItemCount, 2);
         int selectedItemTextColor = a.getColor(R.styleable.HourAndMinutePicker_selectedTextColor,
-                getResources().getColor(R.color.selectedTextColor));
+                getResources().getColor(R.color.com_ycuwq_datepicker_selectedTextColor));
         int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.HourAndMinutePicker_selectedTextSize,
                 getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
         int itemWidthSpace = a.getDimensionPixelSize(R.styleable.HourAndMinutePicker_itemWidthSpace,
@@ -75,7 +75,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         int curtainColor = a.getColor(R.styleable.HourAndMinutePicker_wheelCurtainColor, Color.WHITE);
         boolean isShowCurtainBorder = a.getBoolean(R.styleable.HourAndMinutePicker_wheelCurtainBorder, true);
         int curtainBorderColor = a.getColor(R.styleable.HourAndMinutePicker_wheelCurtainBorderColor,
-                getResources().getColor(R.color.divider));
+                getResources().getColor(R.color.com_ycuwq_datepicker_divider));
         a.recycle();
 
         setTextSize(textSize);
@@ -94,16 +94,16 @@ public class HourAndMinutePicker extends LinearLayout implements
         setCurtainBorderColor(curtainBorderColor);
     }
     private void initChild() {
-        mHourPicker = findViewById(R.id.hourPicker);
+        mHourPicker = findViewById(R.id.hourPicker_layout_time);
         mHourPicker.setOnHourSelectedListener(this);
-        mMinutePicker = findViewById(R.id.minutePicker);
+        mMinutePicker = findViewById(R.id.minutePicker_layout_time);
         mMinutePicker.setOnMinuteSelectedListener(this);
 
     }
 
     private void onTimeSelected() {
-        if (mOnTimeListener != null) {
-            mOnTimeListener.onTimeSelected(getHour(), getMinute());
+        if (mOnTimeSelectedListener != null) {
+            mOnTimeSelectedListener.onTimeSelected(getHour(), getMinute());
         }
     }
 
@@ -338,16 +338,16 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * Sets on date selected listener.
      *
-     * @param onTimeListener the on time selected listener
+     * @param onTimeSelectedListener the on time selected listener
      */
-    public void setOnTimeListener(OnTimeListener onTimeListener) {
-        mOnTimeListener = onTimeListener;
+    public void setOnTimeSelectedListener(OnTimeSelectedListener onTimeSelectedListener) {
+        mOnTimeSelectedListener = onTimeSelectedListener;
     }
 
     /**
      * The interface On date selected listener.
      */
-    public interface OnTimeListener {
+    public interface OnTimeSelectedListener {
         /**
          * On time selected.
          *

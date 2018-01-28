@@ -78,7 +78,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		boolean isCyclic = a.getBoolean(R.styleable.DatePicker_wheelCyclic, false);
 		int halfVisibleItemCount = a.getInteger(R.styleable.DatePicker_halfVisibleItemCount, 2);
 		int selectedItemTextColor = a.getColor(R.styleable.DatePicker_selectedTextColor,
-				getResources().getColor(R.color.selectedTextColor));
+				getResources().getColor(R.color.com_ycuwq_datepicker_selectedTextColor));
 		int selectedItemTextSize = a.getDimensionPixelSize(R.styleable.DatePicker_selectedTextSize,
 				getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
 		int itemWidthSpace = a.getDimensionPixelSize(R.styleable.DatePicker_itemWidthSpace,
@@ -90,7 +90,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		int curtainColor = a.getColor(R.styleable.DatePicker_wheelCurtainColor, Color.WHITE);
 		boolean isShowCurtainBorder = a.getBoolean(R.styleable.DatePicker_wheelCurtainBorder, true);
 		int curtainBorderColor = a.getColor(R.styleable.DatePicker_wheelCurtainBorderColor,
-				getResources().getColor(R.color.divider));
+				getResources().getColor(R.color.com_ycuwq_datepicker_divider));
 		a.recycle();
 
 		setTextSize(textSize);
@@ -109,11 +109,11 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		setCurtainBorderColor(curtainBorderColor);
 	}
 	private void initChild() {
-		mYearPicker = findViewById(R.id.yearPicker);
+		mYearPicker = findViewById(R.id.yearPicker_layout_date);
 		mYearPicker.setOnYearSelectedListener(this);
-		mMonthPicker = findViewById(R.id.monthPicker);
+		mMonthPicker = findViewById(R.id.monthPicker_layout_date);
 		mMonthPicker.setOnMonthSelectedListener(this);
-		mDayPicker = findViewById(R.id.dayPicker);
+		mDayPicker = findViewById(R.id.dayPicker_layout_date);
 		mDayPicker.setOnDaySelectedListener(this);
 	}
 

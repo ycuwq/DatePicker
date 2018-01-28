@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ycuwq_datepicker_cancel">取消</string>
-    <string name="ycuew_datepicker_decide">确认</string>
+    <string name="ycuwq_datepicker_decide">确认</string>
     <string name="ycuwq_datepicker_hour">时</string>
-    <string name="ycuew_datepicker_minute">分</string>
+    <string name="ycuwq_datepicker_minute">分</string>
 </resources>

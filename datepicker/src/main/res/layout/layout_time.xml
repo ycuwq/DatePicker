@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <com.ycuwq.datepicker.time.HourPicker
-        android:id="@+id/hourPicker"
+        android:id="@+id/hourPicker_layout_time"
         app:halfVisibleItemCount="2"
         app:indicatorText="@string/ycuwq_datepicker_hour"
         app:wheelCyclic="true"
@@ -16,9 +16,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
     <com.ycuwq.datepicker.time.MinutePicker
-        android:id="@+id/minutePicker"
+        android:id="@+id/minutePicker_layout_time"
         app:wheelCyclic="true"
-        app:indicatorText="@string/ycuew_datepicker_minute"
+        app:indicatorText="@string/ycuwq_datepicker_minute"
         app:indicatorTextSize="12sp"
         app:halfVisibleItemCount="2"
         android:layout_weight="1"

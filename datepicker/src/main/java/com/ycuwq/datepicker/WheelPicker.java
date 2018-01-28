@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -211,27 +210,20 @@ public class WheelPicker<T> extends View {
 		public void run() {
 
 			if (mScroller.computeScrollOffset()) {
-				int scrollerCurrY = mScroller.getCurrY();
-                if (mIsCyclic) {
-					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
-					//整个高度
-					int height = mDataList.size() * mItemHeight;
-
-					//这边要等到超过显示的长度后进行
-					if (scrollerCurrY > visibleItemCount * mItemHeight) {
-					    scrollerCurrY = scrollerCurrY % height;
-                    }
-                    if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-					    scrollerCurrY = (scrollerCurrY % height) + height;
-                    }
-//                    while (scrollerCurrY > visibleItemCount * mItemHeight) {
-//                        scrollerCurrY -= mDataList.size() * mItemHeight;
+                //                if (mIsCyclic) {
+//					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
+//					//整个高度
+//					int height = mDataList.size() * mItemHeight;
+//
+//					//这边要等到超过显示的长度后进行
+//					if (scrollerCurrY > visibleItemCount * mItemHeight) {
+//					    scrollerCurrY = scrollerCurrY % height;
 //                    }
-//                    while (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-//                        scrollerCurrY += mDataList.size() * mItemHeight;
+//                    if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
+//					    scrollerCurrY = (scrollerCurrY % height) + height;
 //                    }
-				}
-                mScrollOffsetY = scrollerCurrY;
+//				}
+                mScrollOffsetY = mScroller.getCurrY();
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
 			}
@@ -243,20 +235,21 @@ public class WheelPicker<T> extends View {
 					return;
 				}
 				int position = -mScrollOffsetY / mItemHeight;
-				if (mIsCyclic) {
-					//当是循环状态时，根据循环效果的实现机制，mScrollOffsetY会超过list的大小，这里将position修正。
-					while (position >= mDataList.size()) {
-						position -= mDataList.size();
-					}
-					while (position < 0) {
-						position += mDataList.size();
-					}
-				}
+				position = fixItemPosition(position);
+//				if (mIsCyclic) {
+//					//当是循环状态时，根据循环效果的实现机制，mScrollOffsetY会超过list的大小，这里将position修正。
+//					while (position >= mDataList.size()) {
+//						position -= mDataList.size();
+//					}
+//					while (position < 0) {
+//						position += mDataList.size();
+//					}
+//				}
 				if (mCurrentPosition != position) {
-					mOnWheelChangeListener.onWheelSelected(mDataList.get(position),
+                    mCurrentPosition = position;
+                    mOnWheelChangeListener.onWheelSelected(mDataList.get(position),
                             position);
 				}
-				mCurrentPosition = position;
 			}
 		}
 	};
@@ -399,7 +392,23 @@ public class WheelPicker<T> extends View {
 		mScrollOffsetY = -mItemHeight * mCurrentPosition;
 	}
 
+    /**
+     * 修正坐标值，让其回到dateList的范围内
+     * @param position 修正前的值
+     * @return  修正后的值
+     */
+    private int fixItemPosition(int position) {
+        if (position < 0) {
+            //将数据集限定在0 ~ mDataList.size()-1之间
+            position = mDataList.size() + (position % mDataList.size());
 
+        }
+        if (position >= mDataList.size()){
+            //将数据集限定在0 ~ mDataList.size()-1之间
+            position = position % mDataList.size();
+        }
+        return position;
+    }
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -421,19 +430,11 @@ public class WheelPicker<T> extends View {
 		//首尾各多绘制一个用于缓冲
 		for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos++) {
-			int pos = drawDataPos;
+			int position = drawDataPos;
             if (mIsCyclic) {
-				if (pos < 0) {
-					//将数据集限定在0 ~ mDataList.size()-1之间
-                    pos = mDataList.size() + (pos % mDataList.size());
-
-				}
-				if (pos >= mDataList.size()){
-					//将数据集限定在0 ~ mDataList.size()-1之间
-                    pos = pos % mDataList.size();
-				}
+				position = fixItemPosition(position);
 			} else {
-				if (pos < 0 || pos > mDataList.size() - 1) {
+				if (position < 0 || position > mDataList.size() - 1) {
 					continue;
 				}
 			}
@@ -444,7 +445,7 @@ public class WheelPicker<T> extends View {
 				mPaint.setColor(mTextColor);
 			}
 
-			T data = mDataList.get(pos);
+			T data = mDataList.get(position);
 			int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
 			//距离中心的Y轴距离
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
