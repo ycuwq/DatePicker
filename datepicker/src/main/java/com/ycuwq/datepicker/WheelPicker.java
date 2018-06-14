@@ -30,7 +30,6 @@ import java.util.List;
  */
 @SuppressWarnings({"FieldCanBeLocal", "unused", "SameParameterValue"})
 public class WheelPicker<T> extends View {
-	private final String TAG = getClass().getSimpleName();
 
 	/**
 	 * 数据集合
@@ -210,43 +209,24 @@ public class WheelPicker<T> extends View {
 		public void run() {
 
 			if (mScroller.computeScrollOffset()) {
-                //                if (mIsCyclic) {
-//					int visibleItemCount = 2 * mHalfVisibleItemCount + 1;
-//					//整个高度
-//					int height = mDataList.size() * mItemHeight;
-//
-//					//这边要等到超过显示的长度后进行
-//					if (scrollerCurrY > visibleItemCount * mItemHeight) {
-//					    scrollerCurrY = scrollerCurrY % height;
-//                    }
-//                    if (scrollerCurrY < -(visibleItemCount + mDataList.size()) * mItemHeight) {
-//					    scrollerCurrY = (scrollerCurrY % height) + height;
-//                    }
-//				}
+
                 mScrollOffsetY = mScroller.getCurrY();
 				postInvalidate();
 				mHandler.postDelayed(this, 16);
 			}
-			if (mScroller.isFinished()) {
-				if (mOnWheelChangeListener == null) {
-					return;
-				}
+			if (mScroller.isFinished() || (mScroller.getFinalY() == mScroller.getCurrY()
+                    && mScroller.getFinalX() == mScroller.getCurrX())) {
+
 				if (mItemHeight == 0) {
 					return;
 				}
 				int position = -mScrollOffsetY / mItemHeight;
 				position = fixItemPosition(position);
-//				if (mIsCyclic) {
-//					//当是循环状态时，根据循环效果的实现机制，mScrollOffsetY会超过list的大小，这里将position修正。
-//					while (position >= mDataList.size()) {
-//						position -= mDataList.size();
-//					}
-//					while (position < 0) {
-//						position += mDataList.size();
-//					}
-//				}
 				if (mCurrentPosition != position) {
                     mCurrentPosition = position;
+                    if (mOnWheelChangeListener == null) {
+                        return;
+                    }
                     mOnWheelChangeListener.onWheelSelected(mDataList.get(position),
                             position);
 				}
@@ -755,23 +735,27 @@ public class WheelPicker<T> extends View {
      * @param currentPosition 设置的当前位置
      * @param smoothScroll 是否平滑滚动
      */
-    public void setCurrentPosition(int currentPosition, boolean smoothScroll) {
+    public synchronized void setCurrentPosition(int currentPosition, boolean smoothScroll) {
+	    if (currentPosition > mDataList.size() - 1) {
+		    currentPosition = mDataList.size() - 1;
+	    }
+	    if (currentPosition < 0) {
+		    currentPosition = 0;
+	    }
 	    if (mCurrentPosition == currentPosition) {
 	        return;
-        }
-        if (currentPosition > mDataList.size()) {
-            currentPosition = mDataList.size() - 1;
-        }
-        if (currentPosition < 0) {
-            currentPosition = 0;
         }
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
-        if (smoothScroll) {
+
+        //如果mItemHeight=0代表还没有绘制完成，这时平滑滚动没有意义
+        if (smoothScroll && mItemHeight > 0) {
             mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
-            mScroller.setFinalY(mScroller.getFinalY() +
-                    computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+//            mScroller.setFinalY(mScroller.getFinalY() +
+//                    computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+            int finalY = -currentPosition * mItemHeight;
+            mScroller.setFinalY(finalY);
             mHandler.post(mScrollerRunnable);
         } else {
             mCurrentPosition = currentPosition;

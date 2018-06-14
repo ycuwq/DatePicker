@@ -1,6 +1,6 @@
 # DatePicker
 
-[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion) [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion) [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 Android date picker widget.
 
@@ -20,7 +20,7 @@ dependencies {
 }
 ```
 
-## Config in xml:
+## Usage
 
 ```
 <com.ycuwq.datepicker.date.DatePicker
@@ -29,7 +29,7 @@ dependencies {
     android:layout_height="wrap_content"/>
 ```
 
-## Show Dialog
+### Show Dialog
 
 ![screen](https://raw.githubusercontent.com/ycuwq/DatePicker/master/screenshots/device-2018-01-11-201208.gif)
 

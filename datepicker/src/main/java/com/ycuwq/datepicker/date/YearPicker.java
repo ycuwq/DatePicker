@@ -80,9 +80,7 @@ public class YearPicker extends WheelPicker<Integer> {
     }
 
     public void setSelectedYear(int selectedYear, boolean smoothScroll) {
-        mSelectedYear = selectedYear;
-
-        setCurrentPosition(mSelectedYear - mStartYear, smoothScroll);
+        setCurrentPosition(selectedYear - mStartYear, smoothScroll);
     }
 
     public int getSelectedYear() {
