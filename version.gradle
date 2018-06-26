@@ -3,7 +3,6 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 26
     compileSdkVersion = 26
-//    buildToolsVersion = '27.0.2'
 
     supportLibraryVersion = '26.1.0'
     timberVersion = "4.6.0"

@@ -431,13 +431,11 @@ public class WheelPicker<T> extends View {
 			int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
 
 			if (mIsTextGradual) {
-			    //计算文字颜色渐变
                 //文字颜色渐变要在设置透明度上边，否则会被覆盖
-                if (distanceY < mItemHeight) {
+                //计算文字颜色渐变
+                if (distanceY < mItemHeight) {  //距离中心的高度小于一个ItemHeight才会开启渐变
                     float colorRatio = 1 - (distanceY / (float) mItemHeight);
                     mPaint.setColor(mLinearGradient.getColor(colorRatio));
-                } else {
-                    mPaint.setColor(mTextColor);
                 }
                 //计算透明度渐变
 				float alphaRatio;
@@ -450,10 +448,7 @@ public class WheelPicker<T> extends View {
 
 				alphaRatio = alphaRatio < 0 ? 0 :alphaRatio;
 				mPaint.setAlpha((int) (alphaRatio * 255));
-            } else {
-				mPaint.setAlpha(255);
-				mPaint.setColor(mSelectedItemTextColor);
-			}
+            }
 
 			//开启此选项,会将越靠近中心的Item字体放大
 			if (mIsZoomInSelectedItem) {
@@ -600,6 +595,7 @@ public class WheelPicker<T> extends View {
     		return;
 	    }
         mTextColor = textColor;
+    	mLinearGradient.setStartColor(textColor);
         postInvalidate();
     }
 
@@ -616,6 +612,7 @@ public class WheelPicker<T> extends View {
     		return;
 	    }
         mTextSize = textSize;
+        computeTextSize();
         postInvalidate();
     }
 
@@ -632,6 +629,7 @@ public class WheelPicker<T> extends View {
     		return;
 	    }
         mSelectedItemTextColor = selectedItemTextColor;
+    	mLinearGradient.setEndColor(selectedItemTextColor);
         postInvalidate();
     }
 
@@ -648,6 +646,7 @@ public class WheelPicker<T> extends View {
     		return;
 	    }
         mSelectedItemTextSize = selectedItemTextSize;
+    	computeTextSize();
         postInvalidate();
     }
 
