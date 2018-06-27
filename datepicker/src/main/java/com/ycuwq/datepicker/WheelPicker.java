@@ -46,6 +46,7 @@ public class WheelPicker<T> extends View {
 
 	private int mTextSize;
 
+	private Paint mTextPaint;
 	/**
 	 * 字体渐变，开启后越靠近边缘，字体越模糊
 	 */
@@ -62,6 +63,7 @@ public class WheelPicker<T> extends View {
      */
 	private int mSelectedItemTextSize;
 
+	private Paint mSelectedItemPaint;
 	/**
 	 * 指示器文字
 	 * 会在中心文字后边多绘制一个文字。
@@ -78,6 +80,8 @@ public class WheelPicker<T> extends View {
 	 * 指示器文字大小
 	 */
 	private int mIndicatorTextSize;
+
+	private Paint mIndicatorPaint;
 
 	private Paint mPaint;
 
@@ -310,8 +314,21 @@ public class WheelPicker<T> extends View {
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
 		mPaint.setStyle(Paint.Style.FILL);
 		mPaint.setTextAlign(Paint.Align.CENTER);
-		mPaint.setColor(mTextColor);
-		mPaint.setTextSize(mSelectedItemTextSize);
+        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mTextPaint.setStyle(Paint.Style.FILL);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setColor(mTextColor);
+        mTextPaint.setTextSize(mTextSize);
+        mSelectedItemPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mSelectedItemPaint.setStyle(Paint.Style.FILL);
+        mSelectedItemPaint.setTextAlign(Paint.Align.CENTER);
+        mSelectedItemPaint.setColor(mSelectedItemTextColor);
+        mSelectedItemPaint.setTextSize(mSelectedItemTextSize);
+        mIndicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mIndicatorPaint.setStyle(Paint.Style.FILL);
+        mIndicatorPaint.setTextAlign(Paint.Align.LEFT);
+        mIndicatorPaint.setColor(mIndicatorTextSize);
+        mIndicatorPaint.setTextSize(mIndicatorTextColor);
 	}
 
 	/**
@@ -362,7 +379,7 @@ public class WheelPicker<T> extends View {
 				getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
 		mItemHeight = mDrawnRect.height() / getVisibleItemCount();
 		mFirstItemDrawX = mDrawnRect.centerX();
-		mFirstItemDrawY = (int) ((mItemHeight - (mPaint.ascent() + mPaint.descent())) / 2);
+		mFirstItemDrawY = (int) ((mItemHeight - (mSelectedItemPaint.ascent() + mSelectedItemPaint.descent())) / 2);
 		//中间的Item边框
 		mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
 				getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
@@ -418,12 +435,6 @@ public class WheelPicker<T> extends View {
 					continue;
 				}
 			}
-			//在中间位置的Item作为被选中的。
-			if (drawnSelectedPos == drawDataPos) {
-				mPaint.setColor(mSelectedItemTextColor);
-			} else {
-				mPaint.setColor(mTextColor);
-			}
 
 			T data = mDataList.get(position);
 			int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
@@ -435,7 +446,11 @@ public class WheelPicker<T> extends View {
                 //计算文字颜色渐变
                 if (distanceY < mItemHeight) {  //距离中心的高度小于一个ItemHeight才会开启渐变
                     float colorRatio = 1 - (distanceY / (float) mItemHeight);
-                    mPaint.setColor(mLinearGradient.getColor(colorRatio));
+                    mSelectedItemPaint.setColor(mLinearGradient.getColor(colorRatio));
+                    mTextPaint.setColor(mLinearGradient.getColor(colorRatio));
+                } else {
+                    mSelectedItemPaint.setColor(mSelectedItemTextColor);
+                    mTextPaint.setColor(mTextColor);
                 }
                 //计算透明度渐变
 				float alphaRatio;
@@ -447,31 +462,34 @@ public class WheelPicker<T> extends View {
 				}
 
 				alphaRatio = alphaRatio < 0 ? 0 :alphaRatio;
-				mPaint.setAlpha((int) (alphaRatio * 255));
+				mSelectedItemPaint.setAlpha((int) (alphaRatio * 255));
+				mTextPaint.setAlpha((int) (alphaRatio * 255));
             }
 
 			//开启此选项,会将越靠近中心的Item字体放大
 			if (mIsZoomInSelectedItem) {
                 if (distanceY < mItemHeight) {
                     float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
-                    mPaint.setTextSize(mTextSize + addedSize);
+                    mSelectedItemPaint.setTextSize(mTextSize + addedSize);
+                    mTextPaint.setTextSize(mTextSize + addedSize);
                 } else {
-                    mPaint.setTextSize(mTextSize);
+                    mSelectedItemPaint.setTextSize(mTextSize);
+                    mTextPaint.setTextSize(mTextSize);
                 }
             } else {
-                mPaint.setTextSize(mTextSize);
+                mSelectedItemPaint.setTextSize(mTextSize);
+                mTextPaint.setTextSize(mTextSize);
             }
-            if (mDataFormat != null) {
-	            canvas.drawText(mDataFormat.format(data), mFirstItemDrawX, itemDrawY, mPaint);
+            String drawText = mDataFormat == null ? data.toString() : mDataFormat.format(data);
+            //在中间位置的Item作为被选中的。
+            if (distanceY < mItemHeight / 2) {
+                canvas.drawText(drawText, mFirstItemDrawX, itemDrawY, mSelectedItemPaint);
             } else {
-	            canvas.drawText(data.toString(), mFirstItemDrawX, itemDrawY, mPaint);
+                canvas.drawText(drawText, mFirstItemDrawX, itemDrawY, mTextPaint);
             }
 		}
 		if (!TextUtils.isEmpty(mIndicatorText)) {
-			mPaint.setColor(mIndicatorTextColor);
-			mPaint.setTextSize(mIndicatorTextSize);
-			mPaint.setTextAlign(Paint.Align.LEFT);
-			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mPaint);
+			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mIndicatorPaint);
 		}
 	}
 
@@ -567,6 +585,22 @@ public class WheelPicker<T> extends View {
         mOnWheelChangeListener = onWheelChangeListener;
     }
 
+    public Paint getTextPaint() {
+        return mTextPaint;
+    }
+
+    public Paint getSelectedItemPaint() {
+        return mSelectedItemPaint;
+    }
+
+    public Paint getPaint() {
+        return mPaint;
+    }
+
+    public Paint getIndicatorPaint() {
+        return mIndicatorPaint;
+    }
+
     public List<T> getDataList() {
         return mDataList;
     }
@@ -594,6 +628,7 @@ public class WheelPicker<T> extends View {
     	if (mTextColor == textColor) {
     		return;
 	    }
+	    mTextPaint.setColor(textColor);
         mTextColor = textColor;
     	mLinearGradient.setStartColor(textColor);
         postInvalidate();
@@ -612,6 +647,7 @@ public class WheelPicker<T> extends View {
     		return;
 	    }
         mTextSize = textSize;
+    	mTextPaint.setTextSize(textSize);
         computeTextSize();
         postInvalidate();
     }
@@ -628,6 +664,7 @@ public class WheelPicker<T> extends View {
     	if (mSelectedItemTextColor == selectedItemTextColor) {
     		return;
 	    }
+        mSelectedItemPaint.setColor(selectedItemTextColor);
         mSelectedItemTextColor = selectedItemTextColor;
     	mLinearGradient.setEndColor(selectedItemTextColor);
         postInvalidate();
@@ -645,6 +682,7 @@ public class WheelPicker<T> extends View {
     	if (mSelectedItemTextSize == selectedItemTextSize) {
     		return;
 	    }
+	    mSelectedItemPaint.setTextSize(selectedItemTextSize);
         mSelectedItemTextSize = selectedItemTextSize;
     	computeTextSize();
         postInvalidate();
@@ -671,6 +709,7 @@ public class WheelPicker<T> extends View {
 
     /**
      * 显示的个数等于上下两边Item的个数+ 中间的Item
+     * @return 总显示的数量
      */
     public int getVisibleItemCount() {
         return mHalfVisibleItemCount * 2 + 1;
@@ -906,11 +945,13 @@ public class WheelPicker<T> extends View {
 
 	public void setIndicatorTextColor(int indicatorTextColor) {
 		mIndicatorTextColor = indicatorTextColor;
+		mIndicatorPaint.setColor(mIndicatorTextColor);
 		postInvalidate();
 	}
 
 	public void setIndicatorTextSize(int indicatorTextSize) {
 		mIndicatorTextSize = indicatorTextSize;
+		mIndicatorPaint.setTextSize(mIndicatorTextSize);
 		postInvalidate();
 	}
 

@@ -3,6 +3,7 @@ package com.ycuwq.datepicker.time;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -37,7 +38,8 @@ public class HourAndMinutePicker extends LinearLayout implements
         LayoutInflater.from(context).inflate(R.layout.layout_time, this);
         initChild();
         initAttrs(context, attrs);
-
+        mHourPicker.setBackgroundDrawable(getBackground());
+        mMinutePicker.setBackgroundDrawable(getBackground());
     }
 
     @Override
@@ -149,7 +151,38 @@ public class HourAndMinutePicker extends LinearLayout implements
         return mMinutePicker.getCurrentPosition();
     }
 
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        if (mHourPicker != null) {
+            mHourPicker.setBackgroundColor(color);
+        }
+        if (mMinutePicker != null) {
+            mMinutePicker.setBackgroundColor(color);
+        }
+    }
 
+    @Override
+    public void setBackgroundResource(int resid) {
+        super.setBackgroundResource(resid);
+        if (mHourPicker != null) {
+            mHourPicker.setBackgroundResource(resid);
+        }
+        if (mMinutePicker != null) {
+            mMinutePicker.setBackgroundResource(resid);
+        }
+    }
+
+    @Override
+    public void setBackgroundDrawable(Drawable background) {
+        super.setBackgroundDrawable(background);
+        if (mHourPicker != null) {
+            mHourPicker.setBackgroundDrawable(background);
+        }
+        if (mMinutePicker != null) {
+            mMinutePicker.setBackgroundDrawable(background);
+        }
+    }
 
     public HourPicker getHourPicker() {
         return mHourPicker;

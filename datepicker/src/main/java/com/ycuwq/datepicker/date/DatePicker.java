@@ -3,6 +3,7 @@ package com.ycuwq.datepicker.date;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -59,11 +60,13 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 */
 	public DatePicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-
 		LayoutInflater.from(context).inflate(R.layout.layout_date, this);
 		initChild();
 		initAttrs(context, attrs);
-	}
+		mYearPicker.setBackgroundDrawable(getBackground());
+		mMonthPicker.setBackgroundDrawable(getBackground());
+        mDayPicker.setBackgroundDrawable(getBackground());
+    }
 
 	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
 		if (attrs == null) {
@@ -117,7 +120,37 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker.setOnDaySelectedListener(this);
 	}
 
-	private void onDateSelected() {
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        if (mYearPicker != null && mMonthPicker != null && mDayPicker != null) {
+            mYearPicker.setBackgroundColor(color);
+            mMonthPicker.setBackgroundColor(color);
+            mDayPicker.setBackgroundColor(color);
+        }
+    }
+
+    @Override
+    public void setBackgroundResource(int resid) {
+        super.setBackgroundResource(resid);
+        if (mYearPicker != null && mMonthPicker != null && mDayPicker != null) {
+            mYearPicker.setBackgroundResource(resid);
+            mMonthPicker.setBackgroundResource(resid);
+            mDayPicker.setBackgroundResource(resid);
+        }
+    }
+
+    @Override
+    public void setBackgroundDrawable(Drawable background) {
+        super.setBackgroundDrawable(background);
+        if (mYearPicker != null && mMonthPicker != null && mDayPicker != null) {
+            mYearPicker.setBackgroundDrawable(background);
+            mMonthPicker.setBackgroundDrawable(background);
+            mDayPicker.setBackgroundDrawable(background);
+        }
+    }
+
+    private void onDateSelected() {
 		if (mOnDateSelectedListener != null) {
 			mOnDateSelectedListener.onDateSelected(getYear(),
 					getMonth(), getDay());
