@@ -1,4 +1,4 @@
-# DatePicker
+![DatePicker](https://github.com/Tobaloidee/DatePicker/blob/master/logo/logotype.png)
 
 [![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion) [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
