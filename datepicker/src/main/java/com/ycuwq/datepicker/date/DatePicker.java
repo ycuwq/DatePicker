@@ -29,7 +29,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	private MonthPicker mMonthPicker;
 	private DayPicker mDayPicker;
 
-
+	private Long mMaxDate;
+    private Long mMinDate;
 	private OnDateSelectedListener mOnDateSelectedListener;
 
 	/**
@@ -169,9 +170,11 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		onDateSelected();
 	}
 
+
 	@Override
 	public void onYearSelected(int year) {
 		int month = getMonth();
+		mMonthPicker.setYear(year);
 		mDayPicker.setMonth(year, month);
 		onDateSelected();
 	}
@@ -200,6 +203,30 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mMonthPicker.setSelectedMonth(month, smoothScroll);
 		mDayPicker.setSelectedDay(day, smoothScroll);
 	}
+
+	public void setMaxDate(long date) {
+	    setCyclic(false);
+	    mMaxDate = date;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(date);
+	    mYearPicker.setEndYear(calendar.get(Calendar.YEAR));
+	    mMonthPicker.setMaxDate(date);
+        mDayPicker.setMaxDate(date);
+        mMonthPicker.setYear(mYearPicker.getSelectedYear());
+        mDayPicker.setMonth(mYearPicker.getSelectedYear(), mMonthPicker.getSelectedMonth());
+    }
+
+    public void setMinDate(long date) {
+	    setCyclic(false);
+	    mMinDate = date;
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTimeInMillis(date);
+	    mYearPicker.setStartYear(calendar.get(Calendar.YEAR));
+	    mMonthPicker.setMinDate(date);
+        mDayPicker.setMinDate(date);
+        mMonthPicker.setYear(mYearPicker.getSelectedYear());
+        mDayPicker.setMonth(mYearPicker.getSelectedYear(), mMonthPicker.getSelectedMonth());
+    }
 
 	/**
 	 * Gets date.

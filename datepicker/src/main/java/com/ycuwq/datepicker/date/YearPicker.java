@@ -69,10 +69,29 @@ public class YearPicker extends WheelPicker<Integer> {
         setDataList(list);
     }
 
-    public void setYear(int startYear, int endYear) {
+    public void setStartYear(int startYear) {
         mStartYear = startYear;
+        updateYear();
+        if (mStartYear > mSelectedYear) {
+            setSelectedYear(mStartYear, false);
+        } else {
+            setSelectedYear(mSelectedYear, false);
+        }
+    }
+
+    public void setEndYear(int endYear) {
         mEndYear = endYear;
         updateYear();
+        if (mSelectedYear > endYear) {
+            setSelectedYear(mEndYear, false);
+        } else {
+            setSelectedYear(mSelectedYear, false);
+        }
+    }
+
+    public void setYear(int startYear, int endYear) {
+        setStartYear(startYear);
+        setEndYear(endYear);
     }
 
     public void setSelectedYear(int selectedYear) {

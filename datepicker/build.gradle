@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-def libVersionName = "1.1.1"
+def libVersionName = "1.2.0"
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
