@@ -327,8 +327,8 @@ public class WheelPicker<T> extends View {
         mIndicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
         mIndicatorPaint.setStyle(Paint.Style.FILL);
         mIndicatorPaint.setTextAlign(Paint.Align.LEFT);
-        mIndicatorPaint.setColor(mIndicatorTextSize);
-        mIndicatorPaint.setTextSize(mIndicatorTextColor);
+        mIndicatorPaint.setColor(mIndicatorTextColor);
+        mIndicatorPaint.setTextSize(mIndicatorTextSize);
 	}
 
 	/**
