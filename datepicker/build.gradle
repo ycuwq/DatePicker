@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-def libVersionName = "1.2.1"
+def libVersionName = "1.2.2"
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
+        versionCode 13
         versionName libVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

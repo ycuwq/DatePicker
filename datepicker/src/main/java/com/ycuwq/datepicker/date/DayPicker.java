@@ -41,6 +41,7 @@ public class DayPicker extends WheelPicker<Integer>{
 	    numberFormat.setMinimumIntegerDigits(2);
 	    setDataFormat(numberFormat);
 
+        mMinDay = 1;
         mMaxDay = Calendar.getInstance().getActualMaximum(Calendar.DATE);
         updateDay();
         mSelectedDay = Calendar.getInstance().get(Calendar.DATE);
