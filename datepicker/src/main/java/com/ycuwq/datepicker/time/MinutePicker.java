@@ -8,6 +8,7 @@ import com.ycuwq.datepicker.WheelPicker;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -15,6 +16,9 @@ import java.util.List;
  * Created by ycuwq on 2018/1/22.
  */
 public class MinutePicker extends WheelPicker<Integer> {
+
+    private int mSelectedMinute;
+
     private OnMinuteSelectedListener mOnMinuteSelectedListener;
 
     public MinutePicker(Context context) {
@@ -32,6 +36,8 @@ public class MinutePicker extends WheelPicker<Integer> {
         numberFormat.setMinimumIntegerDigits(2);
         setDataFormat(numberFormat);
         updateMinute();
+        mSelectedMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        setSelectedMinute(mSelectedMinute);
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
             @Override
             public void onWheelSelected(Integer item, int position) {
