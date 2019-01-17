@@ -36,6 +36,12 @@ DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment
 datePickerDialogFragment.setOnDateChooseListener(...);
 datePickerDialogFragment.show(getSupportFragmentManager(), "DatePickerDialogFragment");
 ```
+或
+```
+DateTimePickerDialogFragment dateTimePickerDialogFragment = new DateTimePickerDialogFragment();
+dateTimePickerDialogFragment.setOnDateTimeChooseListener(...);
+dateTimePickerDialogFragment.show(thisActivity.getSupportFragmentManager(), "DateTimePickerDialogFragment");
+```
 
 如果想自定义属性需要继承`DialogFragment` ，例如：
 
