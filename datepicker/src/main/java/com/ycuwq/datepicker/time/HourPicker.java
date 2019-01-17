@@ -8,6 +8,7 @@ import com.ycuwq.datepicker.WheelPicker;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -15,6 +16,8 @@ import java.util.List;
  * Created by ycuwq on 2018/1/22.
  */
 public class HourPicker extends WheelPicker<Integer>{
+
+    private int mSelectedHour;
 
     private OnHourSelectedListener mOnHourSelectedListener;
 
@@ -33,6 +36,8 @@ public class HourPicker extends WheelPicker<Integer>{
         numberFormat.setMinimumIntegerDigits(2);
         setDataFormat(numberFormat);
         updateHour();
+        mSelectedHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        setSelectedHour(mSelectedHour);
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
             @Override
             public void onWheelSelected(Integer item, int position) {
