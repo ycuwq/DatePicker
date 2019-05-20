@@ -1,7 +1,7 @@
 package com.ycuwq.datepicker.util;
 
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 /**
  * 颜色线性渐变工具
