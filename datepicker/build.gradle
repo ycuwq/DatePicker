@@ -1,5 +1,5 @@
-apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 def libVersionName = "1.2.3"
 android {
