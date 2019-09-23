@@ -1,7 +1,6 @@
 package com.ycuwq.datepicker.util;
 
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
 
 /**
  * 颜色线性渐变工具
@@ -18,19 +17,19 @@ public class LinearGradient {
     private int mBlueEnd;
     private int mGreenEnd;
 
-	public LinearGradient(@ColorInt int startColor, @ColorInt int endColor) {
+	public LinearGradient(int startColor, int endColor) {
 		mStartColor = startColor;
 		mEndColor = endColor;
         updateColor();
 	}
 
 
-	public void setStartColor(@ColorInt int startColor) {
+	public void setStartColor(int startColor) {
 		mStartColor = startColor;
         updateColor();
 	}
 
-	public void setEndColor(@ColorInt int endColor) {
+	public void setEndColor(int endColor) {
 		mEndColor = endColor;
         updateColor();
 	}

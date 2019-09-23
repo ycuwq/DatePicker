@@ -2,7 +2,6 @@ package com.ycuwq.datepicker.date;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.ycuwq.datepicker.R;
@@ -27,11 +26,11 @@ public class YearPicker extends WheelPicker<Integer> {
         this(context, null);
     }
 
-    public YearPicker(Context context, @Nullable AttributeSet attrs) {
+    public YearPicker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public YearPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public YearPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
         setItemMaximumWidthText("0000");
@@ -48,7 +47,7 @@ public class YearPicker extends WheelPicker<Integer> {
         });
     }
 
-    private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+    private void initAttrs(Context context, AttributeSet attrs) {
         if (attrs == null) {
             return;
         }

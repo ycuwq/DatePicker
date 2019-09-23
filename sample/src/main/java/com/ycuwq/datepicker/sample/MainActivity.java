@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 					Toast.makeText(getApplicationContext(), year + "-" + month + "-" + day, Toast.LENGTH_SHORT).show();
 				}
 			});
-			datePickerDialogFragment.show(getSupportFragmentManager(), "DatePickerDialogFragment");
+			datePickerDialogFragment.show(getFragmentManager(), "DatePickerDialogFragment");
 		});
 		datePicker.setOnDateSelectedListener(new DatePicker.OnDateSelectedListener() {
 			@Override

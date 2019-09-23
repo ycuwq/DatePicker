@@ -1,7 +1,6 @@
 package com.ycuwq.datepicker.date;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.ycuwq.datepicker.WheelPicker;
@@ -33,11 +32,11 @@ public class MonthPicker extends WheelPicker<Integer> {
         this(context, null);
     }
 
-    public MonthPicker(Context context, @Nullable AttributeSet attrs) {
+    public MonthPicker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MonthPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MonthPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 	    setItemMaximumWidthText("00");
 	    NumberFormat numberFormat = NumberFormat.getNumberInstance();

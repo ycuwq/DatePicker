@@ -1,7 +1,6 @@
 package com.ycuwq.datepicker.date;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -34,11 +33,11 @@ public class DayPicker extends WheelPicker<Integer>{
         this(context, null);
     }
 
-    public DayPicker(Context context, @Nullable AttributeSet attrs) {
+    public DayPicker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DayPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DayPicker(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 	    setItemMaximumWidthText("00");
 	    NumberFormat numberFormat = NumberFormat.getNumberInstance();

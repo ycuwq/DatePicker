@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -48,7 +45,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * @param context the context
 	 * @param attrs   the attrs
 	 */
-	public DatePicker(Context context, @Nullable AttributeSet attrs) {
+	public DatePicker(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
@@ -59,7 +56,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * @param attrs        the attrs
 	 * @param defStyleAttr the def style attr
 	 */
-	public DatePicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+	public DatePicker(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		LayoutInflater.from(context).inflate(R.layout.layout_date, this);
 		initChild();
@@ -69,7 +66,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
         mDayPicker.setBackgroundDrawable(getBackground());
     }
 
-	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+	private void initAttrs(Context context, AttributeSet attrs) {
 		if (attrs == null) {
 			return;
 		}
@@ -244,7 +241,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * @param dateFormat the date format
 	 * @return the date
 	 */
-	public String getDate(@NonNull DateFormat dateFormat) {
+	public String getDate(DateFormat dateFormat) {
 		int year, month, day;
 		year = getYear();
 		month = getMonth();
@@ -314,7 +311,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 *
 	 * @param textColor 文本颜色
 	 */
-	public void setTextColor(@ColorInt int textColor) {
+	public void setTextColor(int textColor) {
 		mDayPicker.setTextColor(textColor);
 		mMonthPicker.setTextColor(textColor);
 		mYearPicker.setTextColor(textColor);
@@ -336,7 +333,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 *
 	 * @param selectedItemTextColor 文本颜色
 	 */
-	public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+	public void setSelectedItemTextColor(int selectedItemTextColor) {
 		mDayPicker.setSelectedItemTextColor(selectedItemTextColor);
 		mMonthPicker.setSelectedItemTextColor(selectedItemTextColor);
 		mYearPicker.setSelectedItemTextColor(selectedItemTextColor);
@@ -439,7 +436,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * set curtain color
 	 * @param curtainColor 幕布颜色
 	 */
-	public void setCurtainColor(@ColorInt int curtainColor) {
+	public void setCurtainColor(int curtainColor) {
 		mDayPicker.setCurtainColor(curtainColor);
 		mMonthPicker.setCurtainColor(curtainColor);
 		mYearPicker.setCurtainColor(curtainColor);
@@ -461,7 +458,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * curtain border color
 	 * @param curtainBorderColor 幕布边框颜色
 	 */
-	public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+	public void setCurtainBorderColor(int curtainBorderColor) {
 		mDayPicker.setCurtainBorderColor(curtainBorderColor);
 		mMonthPicker.setCurtainBorderColor(curtainBorderColor);
 		mYearPicker.setCurtainBorderColor(curtainBorderColor);
@@ -485,7 +482,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 * set indicator text color
 	 * @param textColor 文本颜色
 	 */
-	public void setIndicatorTextColor(@ColorInt int textColor) {
+	public void setIndicatorTextColor(int textColor) {
 		mYearPicker.setIndicatorTextColor(textColor);
 		mMonthPicker.setIndicatorTextColor(textColor);
 		mDayPicker.setIndicatorTextColor(textColor);

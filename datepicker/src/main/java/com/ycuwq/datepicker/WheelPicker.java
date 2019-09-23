@@ -7,9 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -41,7 +39,6 @@ public class WheelPicker<T> extends View {
 	/**
 	 * Item的Text的颜色
 	 */
-	@ColorInt
 	private int mTextColor;
 
 	private int mTextSize;
@@ -55,7 +52,6 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 选中的Item的Text颜色
 	 */
-	@ColorInt
 	private int mSelectedItemTextColor;
 
     /**
@@ -73,7 +69,6 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 指示器文字颜色
 	 */
-	@ColorInt
 	private int mIndicatorTextColor;
 
 	/**
@@ -125,7 +120,6 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 幕布颜色
 	 */
-    @ColorInt
     private int mCurtainColor;
 
 	/**
@@ -136,7 +130,6 @@ public class WheelPicker<T> extends View {
     /**
      * 幕布边框的颜色
      */
-	@ColorInt
 	private int mCurtainBorderColor;
 
     /**
@@ -242,11 +235,11 @@ public class WheelPicker<T> extends View {
 		this(context, null);
 	}
 
-	public WheelPicker(Context context, @Nullable AttributeSet attrs) {
+	public WheelPicker(Context context,  AttributeSet attrs) {
 		this(context, attrs,0);
 	}
 
-	public WheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+	public WheelPicker(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		initAttrs(context, attrs);
 		initPaint();
@@ -259,7 +252,7 @@ public class WheelPicker<T> extends View {
 		mTouchSlop = configuration.getScaledTouchSlop();
 	}
 
-	private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+	private void initAttrs(Context context, AttributeSet attrs) {
 	    if (attrs == null) {
 	        return;
         }
@@ -605,7 +598,7 @@ public class WheelPicker<T> extends View {
         return mDataList;
     }
 
-    public void setDataList(@NonNull List<T> dataList) {
+    public void setDataList(List<T> dataList) {
         mDataList = dataList;
         if (dataList.size() == 0) {
             return;
@@ -624,7 +617,7 @@ public class WheelPicker<T> extends View {
      * 一般列表的文本颜色
      * @param textColor 文本颜色
      */
-    public void setTextColor(@ColorInt int textColor) {
+    public void setTextColor(int textColor) {
     	if (mTextColor == textColor) {
     		return;
 	    }
@@ -660,7 +653,7 @@ public class WheelPicker<T> extends View {
      * 设置被选中时候的文本颜色
      * @param selectedItemTextColor 文本颜色
      */
-    public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+    public void setSelectedItemTextColor(int selectedItemTextColor) {
     	if (mSelectedItemTextColor == selectedItemTextColor) {
     		return;
 	    }
@@ -898,7 +891,7 @@ public class WheelPicker<T> extends View {
      * 设置幕布颜色
      * @param curtainColor 幕布颜色
      */
-    public void setCurtainColor(@ColorInt int curtainColor) {
+    public void setCurtainColor(int curtainColor) {
 	    if (mCurtainColor == curtainColor) {
 		    return;
 	    }
@@ -930,7 +923,7 @@ public class WheelPicker<T> extends View {
      * 幕布边框的颜色
      * @param curtainBorderColor 幕布边框颜色
      */
-    public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+    public void setCurtainBorderColor(int curtainBorderColor) {
 	    if (mCurtainBorderColor == curtainBorderColor) {
 		    return;
 	    }

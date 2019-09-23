@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -28,11 +26,11 @@ public class HourAndMinutePicker extends LinearLayout implements
         this(context, null);
     }
 
-    public HourAndMinutePicker(Context context, @Nullable AttributeSet attrs) {
+    public HourAndMinutePicker(Context context,  AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public HourAndMinutePicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public HourAndMinutePicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         LayoutInflater.from(context).inflate(R.layout.layout_time, this);
@@ -52,7 +50,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         onTimeSelected();
     }
 
-    private void initAttrs(Context context, @Nullable AttributeSet attrs) {
+    private void initAttrs(Context context, AttributeSet attrs) {
         if (attrs == null) {
             return;
         }
@@ -197,7 +195,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      *
      * @param textColor 文本颜色
      */
-    public void setTextColor(@ColorInt int textColor) {
+    public void setTextColor(int textColor) {
         mHourPicker.setTextColor(textColor);
         mMinutePicker.setTextColor(textColor);
     }
@@ -217,7 +215,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      *
      * @param selectedItemTextColor 文本颜色
      */
-    public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
+    public void setSelectedItemTextColor(int selectedItemTextColor) {
         mHourPicker.setSelectedItemTextColor(selectedItemTextColor);
         mMinutePicker.setSelectedItemTextColor(selectedItemTextColor);
     }
@@ -311,7 +309,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      * set curtain color
      * @param curtainColor 幕布颜色
      */
-    public void setCurtainColor(@ColorInt int curtainColor) {
+    public void setCurtainColor(int curtainColor) {
         mHourPicker.setCurtainColor(curtainColor);
         mMinutePicker.setCurtainColor(curtainColor);
     }
@@ -331,7 +329,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      * curtain border color
      * @param curtainBorderColor 幕布边框颜色
      */
-    public void setCurtainBorderColor(@ColorInt int curtainBorderColor) {
+    public void setCurtainBorderColor(int curtainBorderColor) {
         mHourPicker.setCurtainBorderColor(curtainBorderColor);
         mMinutePicker.setCurtainBorderColor(curtainBorderColor);
     }
@@ -353,7 +351,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      * set indicator text color
      * @param textColor 文本颜色
      */
-    public void setIndicatorTextColor(@ColorInt int textColor) {
+    public void setIndicatorTextColor(int textColor) {
         mHourPicker.setIndicatorTextColor(textColor);
         mMinutePicker.setIndicatorTextColor(textColor);
     }

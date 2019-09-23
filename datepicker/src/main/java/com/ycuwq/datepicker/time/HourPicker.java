@@ -1,7 +1,6 @@
 package com.ycuwq.datepicker.time;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.ycuwq.datepicker.WheelPicker;
@@ -22,11 +21,11 @@ public class HourPicker extends WheelPicker<Integer>{
         this(context, null);
     }
 
-    public HourPicker(Context context, @Nullable AttributeSet attrs) {
+    public HourPicker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public HourPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public HourPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setItemMaximumWidthText("00");
         NumberFormat numberFormat = NumberFormat.getNumberInstance();

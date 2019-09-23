@@ -1,10 +1,8 @@
 package com.ycuwq.datepicker.date;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,9 @@ import com.ycuwq.datepicker.R;
 /**
  * 时间选择器，弹出框
  * Created by ycuwq on 2018/1/6.
+ * @deprecated If you need to use it, please use support or androidx to achieve.
  */
+@Deprecated
 public class DatePickerDialogFragment extends DialogFragment {
 
 	protected DatePicker mDatePicker;
@@ -35,9 +35,8 @@ public class DatePickerDialogFragment extends DialogFragment {
 		mIsShowAnimation = show;
 	}
 
-	@Nullable
 	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_date, container);
 
 		mDatePicker = view.findViewById(R.id.dayPicker_dialog);
@@ -72,7 +71,6 @@ public class DatePickerDialogFragment extends DialogFragment {
 
 	}
 
-	@NonNull
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog dialog = new Dialog(getActivity(), R.style.DatePickerBottomDialog);
