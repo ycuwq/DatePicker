@@ -116,8 +116,8 @@ public class MonthPicker extends WheelPicker<Integer> {
     }
 
     public void setSelectedMonth(int selectedMonth, boolean smoothScroll) {
-
         setCurrentPosition(selectedMonth - mMinMonth, smoothScroll);
+        mSelectedMonth = selectedMonth;
     }
 
 	public void setOnMonthSelectedListener(OnMonthSelectedListener onMonthSelectedListener) {

@@ -170,8 +170,8 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 
 	@Override
 	public void onYearSelected(int year) {
-		int month = getMonth();
 		mMonthPicker.setYear(year);
+		int month = getMonth();
 		mDayPicker.setMonth(year, month);
 		onDateSelected();
 	}

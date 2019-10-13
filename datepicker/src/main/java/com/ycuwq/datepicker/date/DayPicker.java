@@ -104,6 +104,7 @@ public class DayPicker extends WheelPicker<Integer>{
 
     public void setSelectedDay(int selectedDay, boolean smoothScroll) {
         setCurrentPosition(selectedDay - mMinDay, smoothScroll);
+        mSelectedDay = selectedDay;
     }
 
     public void setMaxDate(long date) {
