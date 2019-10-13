@@ -17,8 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView dateTv = findViewById(R.id.tv_date);
         DatePicker datePicker = findViewById(R.id.datePicker);
-        datePicker.setMaxDate(System.currentTimeMillis());
-        datePicker.setMinDate(System.currentTimeMillis() - 100000000000L);
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
             DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
