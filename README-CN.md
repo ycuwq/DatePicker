@@ -6,13 +6,27 @@ Android 日期选择器控件。
 
 [Repo Wiki](https://github.com/ycuwq/DatePicker/wiki)
 
+[实现思路文档](https://github.com/ycuwq/DatePicker/wiki/%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF)
+
 ## 引入
+
+根目录加入
+
+```groovy
+allprojects {
+    repositories {
+
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
 
 在 app modules加入依赖:
 
 ```
+
 dependencies {
-	implementation 'com.ycuwq.widgets:datepicker:1.0.1'
+	implementation 'com.github.ycuwq:DatePicker:latest-version'
 }
 ```
 

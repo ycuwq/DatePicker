@@ -1,6 +1,6 @@
 ![DatePicker](https://github.com/Tobaloidee/DatePicker/blob/master/logo/logotype.png)
 
-[![Download](https://api.bintray.com/packages/ycuwq/android/datepicker/images/download.svg)](https://bintray.com/ycuwq/android/datepicker/_latestVersion) [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![](https://jitpack.io/v/ycuwq/DatePicker.svg)](https://jitpack.io/#ycuwq/DatePicker)  [![MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 Android date picker widget.
 
@@ -8,15 +8,25 @@ Android date picker widget.
 
 [Repo Wiki](https://github.com/ycuwq/DatePicker/wiki)
 
- [简体中文说明](./README-CN.md)
+[简体中文说明](./README-CN.md)
+[实现思路文档](https://github.com/ycuwq/DatePicker/wiki/%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF)
+## Import
 
-## Import 
+Add it in your root build.gradle at the end of repositories:
+
+```groovy
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
 
 Add the dependency to your app modules:
 
 ```
 dependencies {
-	implementation 'com.ycuwq.widgets:datepicker:latest-version'
+	implementation 'com.github.ycuwq:DatePicker:latest-version'
 }
 ```
 
