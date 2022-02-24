@@ -135,12 +135,12 @@ public class WheelPicker<T> extends View {
     /**
 	 * 整个控件的可绘制面积
 	 */
-	private Rect mDrawnRect;
+	private final Rect mDrawnRect;
 
 	/**
 	 * 中心被选中的Item的坐标矩形
 	 */
-	private Rect mSelectedItemRect;
+	private final Rect mSelectedItemRect;
 
 	/**
 	 * 第一个Item的绘制Text的坐标
@@ -152,9 +152,9 @@ public class WheelPicker<T> extends View {
 	 */
 	private int mCenterItemDrawnY;
 
-	private Scroller mScroller;
+	private final Scroller mScroller;
 
-	private int mTouchSlop;
+	private final int mTouchSlop;
 
     /**
      * 该标记的作用是，令mTouchSlop仅在一个滑动过程中生效一次。
@@ -163,7 +163,7 @@ public class WheelPicker<T> extends View {
 
 	private VelocityTracker mTracker;
 
-	private int mTouchDownY;
+	private float mTouchDownY;
 	/**
 	 * Y轴Scroll滚动的位移
 	 */
@@ -172,7 +172,7 @@ public class WheelPicker<T> extends View {
 	/**
 	 * 最后手指Down事件的Y轴坐标，用于计算拖动距离
 	 */
-	private int mLastDownY;
+	private float mLastDownY;
 
 	/**
 	 * 是否循环读取
@@ -195,13 +195,13 @@ public class WheelPicker<T> extends View {
      */
 	private boolean mIsAbortScroller;
 
-	private LinearGradient mLinearGradient;
+	private final LinearGradient mLinearGradient;
 
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
 	private OnWheelChangeListener<T> mOnWheelChangeListener;
 
-	private Runnable mScrollerRunnable = new Runnable() {
+	private final Runnable mScrollerRunnable = new Runnable() {
 		@Override
 		public void run() {
 
@@ -265,7 +265,7 @@ public class WheelPicker<T> extends View {
 		mIsCyclic = a.getBoolean(R.styleable.WheelPicker_wheelCyclic, false);
 		mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount, 2);
 		mItemMaximumWidthText = a.getString(R.styleable.WheelPicker_itemMaximumWidthText);
-		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.parseColor("#33aaff"));
+		mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedTextColor, Color.parseColor("#33AAFF"));
         mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedTextSize,
                 getResources().getDimensionPixelSize(R.dimen.WheelSelectedItemTextSize));
         mCurrentPosition = a.getInteger(R.styleable.WheelPicker_currentItemPosition, 0);
@@ -292,7 +292,7 @@ public class WheelPicker<T> extends View {
 		}
 
 		//这里使用最大的,防止文字大小超过布局大小。
-        mPaint.setTextSize(mSelectedItemTextSize > mTextSize ? mSelectedItemTextSize : mTextSize);
+        mPaint.setTextSize(Math.max(mSelectedItemTextSize, mTextSize));
 
         if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
             mTextMaxWidth = (int) mPaint.measureText(mItemMaximumWidthText);
@@ -482,7 +482,7 @@ public class WheelPicker<T> extends View {
             }
 		}
 		if (!TextUtils.isEmpty(mIndicatorText)) {
-			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mIndicatorPaint);
+			canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2F, mCenterItemDrawnY, mIndicatorPaint);
 		}
 	}
 
@@ -502,7 +502,7 @@ public class WheelPicker<T> extends View {
                     mIsAbortScroller = false;
                 }
                 mTracker.clear();
-                mTouchDownY = mLastDownY = (int) event.getY();
+                mTouchDownY = mLastDownY = event.getY();
                 mTouchSlopFlag = true;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -512,7 +512,7 @@ public class WheelPicker<T> extends View {
                 mTouchSlopFlag = false;
                 float move = event.getY() - mLastDownY;
                 mScrollOffsetY += move;
-                mLastDownY = (int) event.getY();
+                mLastDownY = event.getY();
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
@@ -783,8 +783,6 @@ public class WheelPicker<T> extends View {
         //如果mItemHeight=0代表还没有绘制完成，这时平滑滚动没有意义
         if (smoothScroll && mItemHeight > 0) {
             mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
-//            mScroller.setFinalY(mScroller.getFinalY() +
-//                    computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
             int finalY = -currentPosition * mItemHeight;
             mScroller.setFinalY(finalY);
             mHandler.post(mScrollerRunnable);
