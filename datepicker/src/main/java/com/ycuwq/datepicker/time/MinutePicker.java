@@ -62,6 +62,6 @@ public class MinutePicker extends WheelPicker<Integer> {
     }
 
     public interface OnMinuteSelectedListener {
-        void onMinuteSelected(int hour);
+        void onMinuteSelected(int minute);
     }
 }
