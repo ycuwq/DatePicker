@@ -3,4 +3,5 @@
     <string name="ycuwq_datepicker_decide">Decide</string>
     <string name="ycuwq_datepicker_hour">H</string>
     <string name="ycuwq_datepicker_minute">m</string>
+    <string name="ycuwq_datepicker_second">s</string>
 </resources>
