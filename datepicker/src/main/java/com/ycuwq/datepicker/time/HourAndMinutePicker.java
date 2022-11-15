@@ -26,7 +26,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         this(context, null);
     }
 
-    public HourAndMinutePicker(Context context,  AttributeSet attrs) {
+    public HourAndMinutePicker(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
@@ -93,6 +93,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         setShowCurtainBorder(isShowCurtainBorder);
         setCurtainBorderColor(curtainBorderColor);
     }
+
     private void initChild() {
         mHourPicker = findViewById(R.id.hourPicker_layout_time);
         mHourPicker.setOnHourSelectedListener(this);
@@ -111,8 +112,8 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * Sets time.
      *
-     * @param hour         the year
-     * @param minute        the month
+     * @param hour   the year
+     * @param minute the month
      */
     public void setTime(int hour, int minute) {
         setTime(hour, minute, true);
@@ -122,7 +123,7 @@ public class HourAndMinutePicker extends LinearLayout implements
      * Sets time.
      *
      * @param hour         the year
-     * @param minute        the month
+     * @param minute       the month
      * @param smoothScroll the smooth scroll
      */
     public void setTime(int hour, int minute, boolean smoothScroll) {
@@ -276,6 +277,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置是否循环滚动。
      * set wheel cyclic
+     *
      * @param cyclic 上下边界是否相邻
      */
     public void setCyclic(boolean cyclic) {
@@ -286,6 +288,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置文字渐变，离中心越远越淡。
      * Set the text color gradient
+     *
      * @param textGradual 是否渐变
      */
     public void setTextGradual(boolean textGradual) {
@@ -297,6 +300,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置中心Item是否有幕布遮盖
      * set the center item curtain cover
+     *
      * @param showCurtain 是否有幕布
      */
     public void setShowCurtain(boolean showCurtain) {
@@ -307,6 +311,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置幕布颜色
      * set curtain color
+     *
      * @param curtainColor 幕布颜色
      */
     public void setCurtainColor(int curtainColor) {
@@ -317,6 +322,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置幕布是否显示边框
      * set curtain border
+     *
      * @param showCurtainBorder 是否有幕布边框
      */
     public void setShowCurtainBorder(boolean showCurtainBorder) {
@@ -327,6 +333,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 幕布边框的颜色
      * curtain border color
+     *
      * @param curtainBorderColor 幕布边框颜色
      */
     public void setCurtainBorderColor(int curtainBorderColor) {
@@ -337,9 +344,9 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置选择器的指示器文本
      * set indicator text
-     * @param hourText  小时指示器文本
+     *
+     * @param hourText   小时指示器文本
      * @param minuteText 分钟指示器文本
-
      */
     public void setIndicatorText(String hourText, String minuteText) {
         mHourPicker.setIndicatorText(hourText);
@@ -349,6 +356,7 @@ public class HourAndMinutePicker extends LinearLayout implements
     /**
      * 设置指示器文字的颜色
      * set indicator text color
+     *
      * @param textColor 文本颜色
      */
     public void setIndicatorTextColor(int textColor) {
@@ -358,7 +366,8 @@ public class HourAndMinutePicker extends LinearLayout implements
 
     /**
      * 设置指示器文字的大小
-     *  indicator text size
+     * indicator text size
+     *
      * @param textSize 文本大小
      */
     public void setIndicatorTextSize(int textSize) {
@@ -382,7 +391,7 @@ public class HourAndMinutePicker extends LinearLayout implements
         /**
          * On time selected.
          *
-         * @param hour  the hour
+         * @param hour   the hour
          * @param minute the minute
          */
         void onTimeSelected(int hour, int minute);

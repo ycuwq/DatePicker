@@ -8,31 +8,31 @@ import android.graphics.Color;
  */
 public class LinearGradient {
 
-	private int mStartColor;
-	private int mEndColor;
-	private int mRedStart;
-	private int mBlueStart;
+    private int mStartColor;
+    private int mEndColor;
+    private int mRedStart;
+    private int mBlueStart;
     private int mGreenStart;
     private int mRedEnd;
     private int mBlueEnd;
     private int mGreenEnd;
 
-	public LinearGradient(int startColor, int endColor) {
-		mStartColor = startColor;
-		mEndColor = endColor;
+    public LinearGradient(int startColor, int endColor) {
+        mStartColor = startColor;
+        mEndColor = endColor;
         updateColor();
-	}
+    }
 
 
-	public void setStartColor(int startColor) {
-		mStartColor = startColor;
+    public void setStartColor(int startColor) {
+        mStartColor = startColor;
         updateColor();
-	}
+    }
 
-	public void setEndColor(int endColor) {
-		mEndColor = endColor;
+    public void setEndColor(int endColor) {
+        mEndColor = endColor;
         updateColor();
-	}
+    }
 
     private void updateColor() {
         mRedStart = Color.red(mStartColor);
@@ -43,10 +43,10 @@ public class LinearGradient {
         mGreenEnd = Color.green(mEndColor);
     }
 
-	public int getColor(float ratio) {
-		int red = (int) (mRedStart + ((mRedEnd - mRedStart) * ratio + 0.5));
-		int greed = (int) (mGreenStart + ((mGreenEnd - mGreenStart) * ratio + 0.5));
-		int blue = (int) (mBlueStart + ((mBlueEnd - mBlueStart) * ratio + 0.5));
-		return Color.rgb(red, greed, blue);
-	}
+    public int getColor(float ratio) {
+        int red = (int) (mRedStart + ((mRedEnd - mRedStart) * ratio + 0.5));
+        int greed = (int) (mGreenStart + ((mGreenEnd - mGreenStart) * ratio + 0.5));
+        int blue = (int) (mBlueStart + ((mBlueEnd - mBlueStart) * ratio + 0.5));
+        return Color.rgb(red, greed, blue);
+    }
 }

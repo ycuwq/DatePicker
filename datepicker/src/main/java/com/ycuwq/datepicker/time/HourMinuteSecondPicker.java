@@ -16,7 +16,7 @@ import com.ycuwq.datepicker.R;
  * 时分秒选择器，秒选择再用一个分选择器实现
  */
 public class HourMinuteSecondPicker extends LinearLayout implements
-        HourPicker.OnHourSelectedListener,MinutePicker.OnMinuteSelectedListener {
+        HourPicker.OnHourSelectedListener, MinutePicker.OnMinuteSelectedListener {
 
     private HourPicker mHourPicker;
     private MinutePicker mMinutePicker;
@@ -48,7 +48,9 @@ public class HourMinuteSecondPicker extends LinearLayout implements
     }
 
     @Override
-    public void onMinuteSelected(int minute) {onTimeSelected();}
+    public void onMinuteSelected(int minute) {
+        onTimeSelected();
+    }
 
     private void initAttrs(Context context, AttributeSet attrs) {
         if (attrs == null) {

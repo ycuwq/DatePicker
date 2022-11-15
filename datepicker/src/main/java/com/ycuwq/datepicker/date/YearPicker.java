@@ -39,7 +39,7 @@ public class YearPicker extends WheelPicker<Integer> {
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
             @Override
             public void onWheelSelected(Integer item, int position) {
-            	mSelectedYear = item;
+                mSelectedYear = item;
                 if (mOnYearSelectedListener != null) {
                     mOnYearSelectedListener.onYearSelected(item);
                 }
@@ -102,7 +102,7 @@ public class YearPicker extends WheelPicker<Integer> {
     }
 
     public int getSelectedYear() {
-    	return mSelectedYear;
+        return mSelectedYear;
     }
 
     public void setOnYearSelectedListener(OnYearSelectedListener onYearSelectedListener) {

@@ -13,7 +13,7 @@ import java.util.List;
  * HourPicker
  * Created by ycuwq on 2018/1/22.
  */
-public class HourPicker extends WheelPicker<Integer>{
+public class HourPicker extends WheelPicker<Integer> {
 
     private OnHourSelectedListener mOnHourSelectedListener;
 

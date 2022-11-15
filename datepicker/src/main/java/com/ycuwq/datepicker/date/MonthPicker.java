@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class MonthPicker extends WheelPicker<Integer> {
 
-    private static int MAX_MONTH = 12;
-    private static int MIN_MONTH = 1;
+    private static final int MAX_MONTH = 12;
+    private static final int MIN_MONTH = 1;
 
     private int mSelectedMonth;
 
@@ -28,6 +28,7 @@ public class MonthPicker extends WheelPicker<Integer> {
     private int mMaxYear, mMinYear;
     private int mMinMonth = MIN_MONTH;
     private int mMaxMonth = MAX_MONTH;
+
     public MonthPicker(Context context) {
         this(context, null);
     }
@@ -38,23 +39,23 @@ public class MonthPicker extends WheelPicker<Integer> {
 
     public MonthPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-	    setItemMaximumWidthText("00");
-	    NumberFormat numberFormat = NumberFormat.getNumberInstance();
-	    numberFormat.setMinimumIntegerDigits(2);
-	    setDataFormat(numberFormat);
+        setItemMaximumWidthText("00");
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMinimumIntegerDigits(2);
+        setDataFormat(numberFormat);
 
-		Calendar.getInstance().clear();
+        Calendar.getInstance().clear();
         mSelectedMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
         updateMonth();
         setSelectedMonth(mSelectedMonth, false);
         setOnWheelChangeListener(new OnWheelChangeListener<Integer>() {
-	        @Override
-	        public void onWheelSelected(Integer item, int position) {
-	        	mSelectedMonth = item;
-		        if (mOnMonthSelectedListener != null) {
-		        	mOnMonthSelectedListener.onMonthSelected(item);
-		        }
-	        }
+            @Override
+            public void onWheelSelected(Integer item, int position) {
+                mSelectedMonth = item;
+                if (mOnMonthSelectedListener != null) {
+                    mOnMonthSelectedListener.onMonthSelected(item);
+                }
+            }
         });
     }
 
@@ -120,12 +121,12 @@ public class MonthPicker extends WheelPicker<Integer> {
         mSelectedMonth = selectedMonth;
     }
 
-	public void setOnMonthSelectedListener(OnMonthSelectedListener onMonthSelectedListener) {
-		mOnMonthSelectedListener = onMonthSelectedListener;
-	}
+    public void setOnMonthSelectedListener(OnMonthSelectedListener onMonthSelectedListener) {
+        mOnMonthSelectedListener = onMonthSelectedListener;
+    }
 
-	public interface OnMonthSelectedListener {
-    	void onMonthSelected(int month);
+    public interface OnMonthSelectedListener {
+        void onMonthSelected(int month);
     }
 
 }
