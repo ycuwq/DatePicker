@@ -66,6 +66,20 @@ public class MyDatePickerDialogFragment extends DatePickerDialogFragment {
 }
 ```
 
+### 自定义格式化日期
+
+```
+double[] limits = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+String[] formats = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec" };
+ChoiceFormat format = new ChoiceFormat(limits, formats);
+datePicker.getMonthPicker().setDataFormat(format);
+```
+
+### 自定义布局
+
+继承 DatePicker 重写 DatePicker 的getLayoutId()方法，返回自定义的布局id。可查看demo中的CustomDatePicker
+
+
 ## 协议
 
 ```

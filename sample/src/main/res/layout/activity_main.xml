@@ -15,7 +15,7 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <com.ycuwq.datepicker.date.DatePicker
+    <com.ycuwq.datepicker.sample.CustomDatePicker
         android:id="@+id/datePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

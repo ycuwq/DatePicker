@@ -58,7 +58,7 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 	 */
 	public DatePicker(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-		LayoutInflater.from(context).inflate(R.layout.layout_date, this);
+		LayoutInflater.from(context).inflate(getLayoutId(), this);
 		initChild();
 		initAttrs(context, attrs);
 		mYearPicker.setBackgroundDrawable(getBackground());
@@ -117,6 +117,10 @@ public class DatePicker extends LinearLayout implements YearPicker.OnYearSelecte
 		mDayPicker = findViewById(R.id.dayPicker_layout_date);
 		mDayPicker.setOnDaySelectedListener(this);
 	}
+
+    protected int getLayoutId() {
+        return R.layout.layout_date;
+    }
 
     @Override
     public void setBackgroundColor(int color) {
